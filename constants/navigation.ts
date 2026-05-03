@@ -1,17 +1,3 @@
-// Navigation configuration and constants
-
-import {
-  LayoutDashboard,
-  BarChart3,
-  Users,
-  Shield,
-  FileText,
-  Settings,
-  Zap,
-  Bell,
-} from 'lucide-react';
-import { NAV_SECTIONS, NAV_LABELS } from './content';
-
 // Route paths - single source of truth for all routes
 export const ROUTES = {
   // Auth routes
@@ -27,7 +13,8 @@ export const ROUTES = {
   PENDING: '/pending',
   USERS: '/users',
   ROLES: '/roles',
-  IMPORT: '/admin/dashboard/import',
+  IMPORT: '/import',
+  RESETPASSWORD:'/admin/reset-password',
   PROGRAMS: '/programs',
   ORGANIZATIONS: '/organizations',
   AUDIT: '/audit',
