@@ -12,7 +12,7 @@ import { t } from "@/lib/i18n";
 
 interface Column<T> {
   header: string;
-  render: (row: T) => React.ReactNode;
+  render: (row: T, index?: number) => React.ReactNode;
 }
 
 interface Props<T> {
@@ -46,7 +46,7 @@ export default function DataTable<T>({ data, columns }: Props<T>) {
             data.map((row, i) => (
               <TableRow key={i}>
                 {columns.map((col, j) => (
-                  <TableCell key={j}>{col.render(row)}</TableCell>
+                  <TableCell key={j}>{col.render(row, i)}</TableCell>
                 ))}
               </TableRow>
             ))

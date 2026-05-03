@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { api } from '@/lib/api';
 import { BulkUser, ImportResults } from '@/types/bulk-import';
+import { userService } from '@/services/userService';
+import { t } from '@/lib/i18n';
 import StepUpload from './StepUpload';
 import StepReview from './StepReview';
 
@@ -56,30 +57,26 @@ export default function BulkImportWizard() {
       }));
 
       if (payload.length === 0) {
-        throw new Error('No valid users to process');
+        throw new Error(t('bulkImport.results.noValidUsers'));
       }
 
-      const response = await api.post('/admin/users/batch', { users: payload });
-      const processedCount = response.data?.data?.count || 0;
-
-      const approvedCount = validRows.filter((u) => u.action === 'approve').length;
-      const roleUpdatedCount = warningRows.length;
+      const data = await userService.batchCreateUsers(payload);
 
       setCommitResults({
         success: true,
         totalSubmitted: parsedUsers.length,
-        createdCount: processedCount,
-        approvedCount,
-        roleUpdatedCount,
-        skippedCount: skippedRows,
+        createdCount: data?.createdCount || 0,
+        approvedCount: data?.createdCount || 0,
+        roleUpdatedCount: data?.updatedCount || 0,
+        skippedCount: data?.skippedCount || 0,
       });
       setShowSuccessModal(true);
-    } catch (error) {
+    } catch {
       setCommitResults({
         success: false,
         totalSubmitted: parsedUsers.length,
         createdCount: 0,
-        errorMessage: 'An error occurred during the import process',
+        errorMessage: t('bulkImport.results.failureDescription'),
       });
       setShowSuccessModal(true);
     } finally {
@@ -96,22 +93,22 @@ export default function BulkImportWizard() {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-textSidebarMuted">Users</span>
+        <span className="text-textSidebarMuted">{t('bulkImport.breadcrumb.users')}</span>
         <span className="text-textSidebarMuted">/</span>
-        <span className="text-primary font-medium">Bulk import</span>
+        <span className="text-primary font-medium">{t('bulkImport.breadcrumb.bulkImport')}</span>
       </div>
 
       {/* Page Header */}
       <div>
-        <h1 className="text-lg font-semibold text-white">Bulk import users</h1>
+        <h1 className="text-lg font-semibold text-white">{t('bulkImport.header.title')}</h1>
         <p className="text-sm text-textSidebarMuted mt-1">
-          Upload a CSV to approve pending users and assign roles in one step. Each row is validated before any changes are committed.
+          {t('bulkImport.header.description')}
         </p>
       </div>
 
       {/* Supported Formats */}
       <div>
-        <p className="text-xs text-textSidebarMuted mb-3">Supported formats</p>
+        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.formats.label')}</p>
         <div className="grid grid-cols-2 gap-3">
           {/* CSV Card */}
           <div
@@ -124,11 +121,11 @@ export default function BulkImportWizard() {
               <span className="text-[10px] font-bold text-[#16a34a] tracking-wider">CSV</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white">.csv format</p>
-              <p className="text-xs text-textSidebarMuted mt-0.5">Comma-separated values</p>
+              <p className="text-sm font-medium text-white">{t('bulkImport.formats.csv')}</p>
+              <p className="text-xs text-textSidebarMuted mt-0.5">{t('bulkImport.formats.csvDescription')}</p>
             </div>
             <span className="text-[10px] font-medium text-[#16a34a] border border-[#16a34a]/30 bg-[#16a34a]/10 px-2 py-0.5 rounded">
-              Enabled
+              {t('bulkImport.formats.enabled')}
             </span>
           </div>
 
@@ -143,11 +140,11 @@ export default function BulkImportWizard() {
               <span className="text-[10px] font-bold text-[#16a34a] tracking-wider">XLS</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white">.xlsx format</p>
-              <p className="text-xs text-textSidebarMuted mt-0.5">Excel workbook</p>
+              <p className="text-sm font-medium text-white">{t('bulkImport.formats.xlsx')}</p>
+              <p className="text-xs text-textSidebarMuted mt-0.5">{t('bulkImport.formats.xlsxDescription')}</p>
             </div>
             <span className="text-[10px] font-medium text-textSidebarMuted border border-white/10 bg-white/5 px-2 py-0.5 rounded">
-              Paid plan
+              {t('bulkImport.formats.paidPlan')}
             </span>
           </div>
         </div>
@@ -155,21 +152,21 @@ export default function BulkImportWizard() {
 
       {selectedFormat === 'xlsx' ? (
         <div className="p-4 rounded-xl bg-accentOrange/10 border border-accentOrange/20">
-          <p className="text-sm font-medium text-accentOrange">Paid Plan Required</p>
+          <p className="text-sm font-medium text-accentOrange">{t('bulkImport.formats.paidPlanTitle')}</p>
           <p className="text-xs text-accentOrange/80 mt-1">
-            The .xlsx format is currently only available for customers on a paid plan. Please select .csv or contact support to upgrade.
+            {t('bulkImport.formats.paidPlanDescription')}
           </p>
         </div>
       ) : (
         <>
           {/* Step 1 — Download template */}
       <div>
-        <p className="text-xs text-textSidebarMuted mb-3">Step 1 — Download template</p>
+        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.template.stepLabel')}</p>
         <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
           <div>
-            <p className="text-sm font-medium text-white">roles_import_template.csv</p>
+            <p className="text-sm font-medium text-white">{t('bulkImport.template.fileName')}</p>
             <p className="text-xs text-textSidebarMuted mt-1">
-              Columns: email, role, action · Valid roles: employee · provider · manager · admin · Actions: approve · update
+              {t('bulkImport.template.description')}
             </p>
           </div>
           <button
@@ -187,14 +184,14 @@ export default function BulkImportWizard() {
                        rounded-lg hover:bg-white/10 transition-all duration-200"
             id="download-template-btn"
           >
-            Download
+            {t('bulkImport.template.downloadButton')}
           </button>
         </div>
       </div>
 
       {/* Step 2 — Upload file */}
       <div>
-        <p className="text-xs text-textSidebarMuted mb-3">Step 2 — Upload file</p>
+        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.upload.stepLabel')}</p>
 
         {!hasFile ? (
           <StepUpload onFileParsed={handleFileParsed} />
@@ -231,11 +228,11 @@ export default function BulkImportWizard() {
               </svg>
             </div>
 
-            <h3 className="text-lg font-semibold text-white mb-3">Confirm bulk import</h3>
+            <h3 className="text-lg font-semibold text-white mb-3">{t('bulkImport.confirm.title')}</h3>
             <p className="text-sm text-textSidebarMuted leading-relaxed">
-              This will approve <span className="font-bold text-white">{validRows.length} users</span> and assign their roles immediately.
-              {skippedRows > 0 && ` ${skippedRows} row${skippedRows > 1 ? 's' : ''} with errors will be skipped.`}
-              {' '}This action is logged in the audit trail and cannot be undone in bulk.
+              {t('bulkImport.confirm.description', { count: validRows.length })}
+              {skippedRows > 0 && ` ${t('bulkImport.confirm.skippedNote', { count: skippedRows })}`}
+              {' '}{t('bulkImport.confirm.auditNote')}
             </p>
 
             <div className="flex items-center justify-end gap-3 mt-8">
@@ -245,7 +242,7 @@ export default function BulkImportWizard() {
                            rounded-lg hover:bg-white/10 transition-all duration-200"
                 id="confirm-cancel-btn"
               >
-                Cancel
+                {t('bulkImport.confirm.cancelButton')}
               </button>
               <button
                 onClick={handleConfirmCommit}
@@ -253,7 +250,7 @@ export default function BulkImportWizard() {
                            rounded-lg hover:bg-primaryDark transition-all duration-200"
                 id="confirm-commit-btn"
               >
-                Yes, commit changes
+                {t('bulkImport.confirm.confirmButton')}
               </button>
             </div>
           </div>
@@ -282,16 +279,16 @@ export default function BulkImportWizard() {
             </div>
 
             <h3 className={`text-lg font-semibold mb-3 ${commitResults.success ? 'text-white' : 'text-accentRed'}`}>
-              {commitResults.success ? 'Import successful' : 'Import failed'}
+              {commitResults.success ? t('bulkImport.results.successTitle') : t('bulkImport.results.failureTitle')}
             </h3>
             
             {commitResults.success ? (
               <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
-                {commitResults.createdCount} users have been approved and roles assigned. They will receive login emails shortly.
+                {t('bulkImport.results.successDescription', { count: commitResults.createdCount })}
               </p>
             ) : (
               <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
-                {commitResults.errorMessage || 'An error occurred during the import process.'}
+                {commitResults.errorMessage || t('bulkImport.results.failureDescription')}
               </p>
             )}
 
@@ -299,19 +296,25 @@ export default function BulkImportWizard() {
             {commitResults.success && (
               <div className="flex items-center gap-2 text-sm mb-8">
                 {(commitResults.approvedCount ?? 0) > 0 && (
-                  <span className="text-accentGreen">{commitResults.approvedCount} approved</span>
+                  <span className="text-accentGreen">
+                    {t('bulkImport.results.approved', { count: commitResults.approvedCount ?? 0 })}
+                  </span>
                 )}
                 {(commitResults.approvedCount ?? 0) > 0 && ((commitResults.roleUpdatedCount ?? 0) > 0 || (commitResults.skippedCount ?? 0) > 0) && (
                   <span className="text-textSidebarMuted">·</span>
                 )}
                 {(commitResults.roleUpdatedCount ?? 0) > 0 && (
-                  <span className="text-accentOrange">{commitResults.roleUpdatedCount} role updated</span>
+                  <span className="text-accentOrange">
+                    {t('bulkImport.results.roleUpdated', { count: commitResults.roleUpdatedCount ?? 0 })}
+                  </span>
                 )}
                 {(commitResults.roleUpdatedCount ?? 0) > 0 && (commitResults.skippedCount ?? 0) > 0 && (
                   <span className="text-textSidebarMuted">·</span>
                 )}
                 {(commitResults.skippedCount ?? 0) > 0 && (
-                  <span className="text-textSidebarMuted">{commitResults.skippedCount} skipped</span>
+                  <span className="text-textSidebarMuted">
+                    {t('bulkImport.results.skipped', { count: commitResults.skippedCount ?? 0 })}
+                  </span>
                 )}
               </div>
             )}
@@ -323,7 +326,7 @@ export default function BulkImportWizard() {
                            rounded-lg hover:bg-primaryDark transition-all duration-200"
                 id="success-done-btn"
               >
-                Done
+                {t('bulkImport.results.doneButton')}
               </button>
             </div>
           </div>

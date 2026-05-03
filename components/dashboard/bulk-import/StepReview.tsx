@@ -2,6 +2,8 @@
 
 import { Loader2 } from 'lucide-react';
 import { BulkUser } from '@/types/bulk-import';
+import DataTable from '@/components/shared/data-table';
+import { t } from '@/lib/i18n';
 
 interface StepReviewProps {
   users: BulkUser[];
@@ -18,6 +20,70 @@ interface StepReviewProps {
   onCommit: () => void;
 }
 
+/**
+ * Build the column definitions for the review DataTable.
+ */
+function getReviewColumns() {
+  return [
+    {
+      header: t('bulkImport.review.columnRow'),
+      render: (_: BulkUser, idx?: number) => (
+        <span className="text-xs text-textSidebarMuted">{(idx ?? 0) + 1}</span>
+      ),
+    },
+    {
+      header: t('bulkImport.review.columnEmail'),
+      render: (user: BulkUser) => (
+        <span className={`text-xs ${user.status === 'Error' ? 'text-white/40 line-through' : 'text-white'}`}>
+          {user.email}
+        </span>
+      ),
+    },
+    {
+      header: t('bulkImport.review.columnRole'),
+      render: (user: BulkUser) => (
+        <span className="text-[11px] font-medium text-primary/80 bg-primary/10 px-2.5 py-1 rounded-md capitalize">
+          {user.role || 'employee'}
+        </span>
+      ),
+    },
+    {
+      header: t('bulkImport.review.columnAction'),
+      render: (user: BulkUser) => (
+        <span className="text-[11px] text-textSidebarMuted capitalize">{user.action}</span>
+      ),
+    },
+    {
+      header: t('bulkImport.review.columnStatus'),
+      render: (user: BulkUser) => {
+        const colorMap = {
+          Error: 'text-accentRed bg-accentRed/10',
+          Warning: 'text-accentOrange bg-accentOrange/10',
+          Valid: 'text-[#16a34a] bg-[#16a34a]/10',
+        };
+        return (
+          <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${colorMap[user.status]}`}>
+            {user.status}
+          </span>
+        );
+      },
+    },
+    {
+      header: t('bulkImport.review.columnNote'),
+      render: (user: BulkUser) => {
+        const colorMap = {
+          Error: 'text-accentRed',
+          Warning: 'text-accentOrange',
+          Valid: 'text-textSidebarMuted',
+        };
+        return (
+          <span className={`text-[11px] ${colorMap[user.status]}`}>{user.note}</span>
+        );
+      },
+    },
+  ];
+}
+
 export default function StepReview({
   users,
   fileName,
@@ -32,6 +98,8 @@ export default function StepReview({
   onReUpload,
   onCommit,
 }: StepReviewProps) {
+  const columns = getReviewColumns();
+
   return (
     <div className="space-y-6">
       {/* Uploaded File Info */}
@@ -47,115 +115,59 @@ export default function StepReview({
           className="text-sm text-accentRed hover:text-accentRedHover transition-colors"
           id="remove-file-btn"
         >
-          Remove
+          {t('bulkImport.review.removeButton')}
         </button>
       </div>
 
       {/* Preview Table Header */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-textSidebarMuted">Preview — read only</p>
+        <p className="text-xs text-textSidebarMuted">{t('bulkImport.review.previewLabel')}</p>
         <div className="flex items-center gap-3">
           {validCount > 0 && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#16a34a]/10 border border-[#16a34a]/20">
-              <span className="text-[10px] font-medium text-[#16a34a]">{validCount} valid</span>
+              <span className="text-[10px] font-medium text-[#16a34a]">
+                {t('bulkImport.review.valid', { count: validCount })}
+              </span>
             </div>
           )}
           {errorCount > 0 && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-accentRed/10 border border-accentRed/20">
-              <span className="text-[10px] font-medium text-accentRed">{errorCount} error</span>
+              <span className="text-[10px] font-medium text-accentRed">
+                {t('bulkImport.review.error', { count: errorCount })}
+              </span>
             </div>
           )}
           {warningCount > 0 && (
             <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-accentOrange/10 border border-accentOrange/20">
-              <span className="text-[10px] font-medium text-accentOrange">{warningCount} warning</span>
+              <span className="text-[10px] font-medium text-accentOrange">
+                {t('bulkImport.review.warning', { count: warningCount })}
+              </span>
             </div>
           )}
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table using DataTable */}
       <div className="bg-bgStatCard rounded-xl border border-borderCard overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-textSidebarMuted">#</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-textSidebarMuted">Email</th>
-                <th className="text-center px-5 py-3 text-[11px] font-medium text-textSidebarMuted">Role</th>
-                <th className="text-center px-5 py-3 text-[11px] font-medium text-textSidebarMuted">Action</th>
-                <th className="text-center px-5 py-3 text-[11px] font-medium text-textSidebarMuted">Status</th>
-                <th className="text-left px-5 py-3 text-[11px] font-medium text-textSidebarMuted">Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, idx) => {
-                const isError = user.status === 'Error';
-                const isWarning = user.status === 'Warning';
-                const isValid = user.status === 'Valid';
-
-                return (
-                  <tr
-                    key={user._rowId}
-                    className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors relative"
-                  >
-                    {/* Status accent line */}
-                    <td className="absolute left-0 top-0 bottom-0 w-[2px]">
-                      <div className={`h-full w-full ${isError ? 'bg-accentRed' : isWarning ? 'bg-accentOrange' : 'bg-[#16a34a]'}`} />
-                    </td>
-                    <td className="px-5 py-3 text-xs text-textSidebarMuted w-12">{idx + 1}</td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs ${isError ? 'text-white/40 line-through' : 'text-white'}`}>
-                        {user.email}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-center">
-                      <span className="text-[11px] font-medium text-primary/80 bg-primary/10 px-2.5 py-1 rounded-md capitalize">
-                        {user.role || 'employee'}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-center">
-                      <span className="text-[11px] text-textSidebarMuted capitalize">
-                        {user.action}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-center">
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded ${
-                        isError ? 'text-accentRed bg-accentRed/10' :
-                        isWarning ? 'text-accentOrange bg-accentOrange/10' :
-                        'text-[#16a34a] bg-[#16a34a]/10'
-                      }`}>
-                        {user.status}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3">
-                      <span className={`text-[11px] ${
-                        isError ? 'text-accentRed' :
-                        isWarning ? 'text-accentOrange' :
-                        'text-textSidebarMuted'
-                      }`}>
-                        {user.note}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+        <DataTable data={users} columns={columns} />
 
         <div className="px-5 py-2 text-xs text-textSidebarMuted bg-white/[0.01] border-t border-white/5">
-          Preview is read-only. To make corrections, fix the source CSV and re-upload.
+          {t('bulkImport.review.footerInfo')}
         </div>
 
         {/* Footer Navigation */}
         <div className="flex items-center justify-between p-5 border-t border-white/5">
           <div className="text-sm">
-            <span className="text-textSidebarMuted">Committing </span>
-            <span className="text-white font-medium">{validCount} valid rows</span>
+            <span className="text-textSidebarMuted">{t('bulkImport.review.committing')} </span>
+            <span className="text-white font-medium">
+              {t('bulkImport.review.validRows', { count: validCount })}
+            </span>
             {skippedCount > 0 && (
               <>
                 <span className="text-textSidebarMuted"> · </span>
-                <span className="text-accentRed font-medium">{skippedCount} skipped</span>
+                <span className="text-accentRed font-medium">
+                  {t('bulkImport.review.skipped', { count: skippedCount })}
+                </span>
               </>
             )}
           </div>
@@ -169,7 +181,7 @@ export default function StepReview({
                          disabled:opacity-40 disabled:cursor-not-allowed"
               id="review-reupload-btn"
             >
-              Re-upload
+              {t('bulkImport.review.reUploadButton')}
             </button>
 
             <button
@@ -183,10 +195,10 @@ export default function StepReview({
               {isCommitting ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
-                  Committing...
+                  {t('bulkImport.review.committingButton')}
                 </>
               ) : (
-                `Commit ${validCount} changes`
+                t('bulkImport.review.commitButton', { count: validCount })
               )}
             </button>
           </div>
