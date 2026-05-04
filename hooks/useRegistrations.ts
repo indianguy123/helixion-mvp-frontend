@@ -2,16 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { FormattedRegistration } from '@/types/admin';
-import { transformRegistrationData, isValidApiResponse } from '@/utils/adminHelpers';
-import { API_ENDPOINTS } from '@/constants/admin';
-import { FORM_ERRORS, AUTH_ERRORS, NETWORK_ERRORS } from '@/constants/errors';
-import { getAccessToken } from '@/utils/token';
+import { transformRegistrationData } from '@/utils/adminHelpers';
+import { NETWORK_ERRORS } from '@/constants/errors';
+import { getPendingUserAPI } from '@/services/adminService';
 
 interface UseRegistrationsReturn {
   registrations: FormattedRegistration[];
   loading: boolean;
   error: string | null;
-  retry: () => void;
 }
 
 /**
@@ -22,55 +20,12 @@ export const useRegistrations = (): UseRegistrationsReturn => {
   const [registrations, setRegistrations] = useState<FormattedRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchRegistrations = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-        if (!apiUrl) {
-          setError(NETWORK_ERRORS.SERVER_ERROR);
-          setLoading(false);
-          return;
-        }
-
-        const token = getAccessToken();
-
-        if (!token) {
-          setError(AUTH_ERRORS.TOKEN_MISSING);
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(`${apiUrl}${API_ENDPOINTS.REGISTRATIONS}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            setError(AUTH_ERRORS.SESSION_EXPIRED);
-          } else if (response.status >= 500) {
-            setError(NETWORK_ERRORS.SERVER_ERROR);
-          } else {
-            setError(FORM_ERRORS.DATA_LOAD_FAILED);
-          }
-          setLoading(false);
-          return;
-        }
-
-        const result = await response.json();
-
-        if (!isValidApiResponse<unknown[]>(result) || !result.success) {
-          setError(FORM_ERRORS.DATA_LOAD_FAILED);
-          setLoading(false);
-          return;
-        }
-
-        const formattedData = transformRegistrationData(result.data);
+        const response = await getPendingUserAPI()
+        const formattedData = transformRegistrationData(response.data.data);
         setRegistrations(formattedData);
         setError(null);
       } catch {
@@ -81,11 +36,8 @@ export const useRegistrations = (): UseRegistrationsReturn => {
     };
 
     fetchRegistrations();
-  }, [retryCount]);
+  }, []);
 
-  const retry = () => {
-    setRetryCount((prev) => prev + 1);
-  };
 
-  return { registrations, loading, error, retry };
+  return { registrations, loading, error };
 };

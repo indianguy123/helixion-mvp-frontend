@@ -1,4 +1,5 @@
 import { RegistrationRowProps } from '@/types/admin';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 /**
  * Individual registration row with approve/deny actions
@@ -23,12 +24,16 @@ export default function RegistrationRow({
       </div>
       <div className="flex items-center gap-3">
         <div className="text-textSidebarMuted text-xs">{date}</div>
-        <button className="bg-accentGreen hover:bg-accentGreenHover text-white text-xs px-4 py-1.5 rounded transition-colors">
-          Approve
-        </button>
-        <button className="bg-accentRed hover:bg-accentRedHover text-white text-xs px-4 py-1.5 rounded transition-colors">
-          Deny
-        </button>
+         <CheckCircle2
+          size={18}
+          className="text-accentGreen cursor-pointer hover:scale-110 transition-transform"
+           aria-label="Approve"
+        />
+        <XCircle
+          size={18}
+          className="text-accentRed cursor-pointer hover:scale-110 transition-transform"
+           aria-label="Deny"
+        />
       </div>
     </div>
   );

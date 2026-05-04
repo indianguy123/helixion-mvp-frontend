@@ -12,7 +12,7 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
  * Main admin dashboard page with production-level architecture
  */
 export default function AdminDashboard() {
-  const { registrations, loading, error, retry } = useRegistrations();
+  const { registrations, loading, error } = useRegistrations();
 
   const recentActivities: Activity[] = [];
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
@@ -61,12 +61,6 @@ export default function AdminDashboard() {
                   <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6 flex items-center justify-center h-[400px]`}>
                     <div className="text-center">
                       <p className="text-textSidebarMuted mb-2">{error}</p>
-                      <button
-                        onClick={retry}
-                        className="text-primary hover:text-primaryDark text-sm font-medium"
-                      >
-                        Try again
-                      </button>
                     </div>
                   </div>
                 ) : (

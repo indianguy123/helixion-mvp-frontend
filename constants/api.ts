@@ -6,7 +6,8 @@ export const API = {
       RESET_PASSWORD:'/auth/reset-password'
    },
    ADMIN:{
-      USERS:'/admin/users'
+      USERS:'/admin/users',
+      REGISTRATION:'/admin/registrations'
    },
    EMPLOYEE:{
       DASHBOARD:'/employee/dashboard'
