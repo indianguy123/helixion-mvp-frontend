@@ -23,13 +23,11 @@ export interface Enrollment {
 // ─── Programme ───────────────────────────────────────────────────────────────
 export interface Programme {
   _id: string;
-  name: string;
-  description: string;
-  duration: string;
-  mode: string;
-  location: string;
-  status: string; 
-  fee: number;
+  title: string;
+  duration: number;
+  venue: string;
+  start_date:Date,
+  end_date:Date
 }
 
 // ─── Nav Item ────────────────────────────────────────────────────────────────

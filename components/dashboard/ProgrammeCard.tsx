@@ -14,18 +14,18 @@ export function ProgrammeCard({ programme, onEnrol }: ProgrammeCardProps) {
     <Card className="flex flex-col">
       <CardContent className="flex flex-col flex-1 p-3.5">
         <p className="text-xs font-semibold text-foreground leading-snug mb-1">
-          {programme.name}
+          {programme.title}
         </p>
 
         <p className="text-[10px] text-muted-foreground mb-3 leading-relaxed">
-          {programme.duration} · {programme.mode}
+          {programme.duration} days
         </p>
 
         <div className="flex items-center justify-between mt-auto">
-          {programme.location && (
+          {programme.venue && (
             <span className="text-[9px] text-muted-foreground flex items-center gap-1">
               <MapPin className="size-2.5" />
-              {programme.location}
+              {programme.venue}
             </span>
           )}
 
