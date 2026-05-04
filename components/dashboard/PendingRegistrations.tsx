@@ -1,6 +1,5 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
 import { PendingRegistrationsProps } from '@/types/admin';
 import { AVATAR_BACKGROUNDS } from '@/constants/admin';
 import { ADMIN_CONTENT } from '@/constants/content';
@@ -34,7 +33,7 @@ export default function PendingRegistrations({ registrations }: PendingRegistrat
       <div className="p-6">
         {registrations.map((registration, index) => (
           <RegistrationRow
-            key={registration.id}
+            Id={registration.id}
             name={registration.name}
             email={registration.email}
             date={registration.date}

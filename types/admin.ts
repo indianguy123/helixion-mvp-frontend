@@ -62,6 +62,7 @@ export interface ActivityItemProps {
 }
 
 export interface RegistrationRowProps {
+  Id:string;
   name: string;
   email: string;
   date: string;
