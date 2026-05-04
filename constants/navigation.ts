@@ -13,7 +13,7 @@ export const ROUTES = {
   PENDING: '/pending',
   USERS: '/users',
   ROLES: '/roles',
-  IMPORT: '/import',
+  IMPORT: '/admin/dashboard/import',
   RESETPASSWORD:'/admin/reset-password',
   PROGRAMS: '/programs',
   ORGANIZATIONS: '/organizations',
