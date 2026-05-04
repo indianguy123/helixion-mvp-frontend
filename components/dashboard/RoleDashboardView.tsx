@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { MyEnrollments } from "./MyEnrollments";
 import { AvailableProgrammes } from "./AvailableProgrammes";
-import { fetchEmployeeDashboardData } from "@/utils/employeeService";
+import { fetchEmployeeDashboardData } from "@/services/employeeService";
 import { t } from "@/lib/i18n";
 import { AppAlert } from "../shared/app-alert";
 
