@@ -86,5 +86,88 @@
          "successDescription": "The user has been assigned a role and approved successfully.",
          "roleAssigned": "Role assigned"
       }
+   },
+   "bulkImport": {
+      "breadcrumb": {
+         "users": "Users",
+         "bulkImport": "Bulk import"
+      },
+      "header": {
+         "title": "Bulk import users",
+         "description": "Upload a CSV to approve pending users and assign roles in one step. Each row is validated before any changes are committed."
+      },
+      "formats": {
+         "label": "Supported formats",
+         "csv": ".csv format",
+         "csvDescription": "Comma-separated values",
+         "xlsx": ".xlsx format",
+         "xlsxDescription": "Excel workbook",
+         "enabled": "Enabled",
+         "paidPlan": "Paid plan",
+         "paidPlanTitle": "Paid Plan Required",
+         "paidPlanDescription": "The .xlsx format is currently only available for customers on a paid plan. Please select .csv or contact support to upgrade."
+      },
+      "template": {
+         "stepLabel": "Step 1 — Download template",
+         "fileName": "roles_import_template.csv",
+         "description": "Columns: email, role, action · Valid roles: employee · provider · manager · admin · Actions: approve · update",
+         "downloadButton": "Download"
+      },
+      "upload": {
+         "stepLabel": "Step 2 — Upload file",
+         "dropLabel": "Drop {format} file here or click to browse",
+         "hint": ".xlsx available on paid plan · Max 50 rows",
+         "processing": "Processing file...",
+         "errorTitle": "Upload Error",
+         "errorInvalidType": "Please upload a CSV file (.csv)",
+         "errorFileSize": "File size must be under 5MB",
+         "errorNoData": "No valid data found in the file. Ensure it has an \"email\" column.",
+         "errorMaxRows": "Maximum 50 rows allowed per batch. Your file contains {count} rows.",
+         "errorCsvNoEmail": "CSV must contain an \"email\" column",
+         "errorGeneric": "Failed to process file"
+      },
+      "review": {
+         "previewLabel": "Preview — read only",
+         "valid": "{count} valid",
+         "error": "{count} error",
+         "warning": "{count} warning",
+         "columnRow": "#",
+         "columnEmail": "Email",
+         "columnRole": "Role",
+         "columnAction": "Action",
+         "columnStatus": "Status",
+         "columnNote": "Note",
+         "footerInfo": "Preview is read-only. To make corrections, fix the source CSV and re-upload.",
+         "committing": "Committing",
+         "validRows": "{count} valid rows",
+         "skipped": "{count} skipped",
+         "reUploadButton": "Re-upload",
+         "commitButton": "Commit {count} changes",
+         "committingButton": "Committing...",
+         "removeButton": "Remove",
+         "noteValid": "Pending user found",
+         "noteInvalidRole": "User not found — will be skipped",
+         "noteInvalidAction": "Invalid action — will be skipped",
+         "noteRoleChange": "Role change: Employee → {role}"
+      },
+      "confirm": {
+         "title": "Confirm bulk import",
+         "description": "This will approve {count} users and assign their roles immediately.",
+         "skippedNote": "{count} row(s) with errors will be skipped.",
+         "auditNote": "This action is logged in the audit trail and cannot be undone in bulk.",
+         "cancelButton": "Cancel",
+         "confirmButton": "Yes, commit changes"
+      },
+      "results": {
+         "successTitle": "Import successful",
+         "failureTitle": "Import failed",
+         "successDescription": "{count} users have been approved and roles assigned. They will receive login emails shortly.",
+         "failureDescription": "An error occurred during the import process.",
+         "approved": "{count} approved",
+         "roleUpdated": "{count} role updated",
+         "skipped": "{count} skipped",
+         "doneButton": "Done",
+         "noValidUsers": "No valid users to process"
+      }
    }
 }
