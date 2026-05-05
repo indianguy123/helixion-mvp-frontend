@@ -1,10 +1,9 @@
-import { Role } from "@/types/role";
-
-export const ROLES: Role[] = ['user', 'admin', 'manager','training-provider'];
+export const ROLES = ['user', 'admin', 'manager', 'training-provider'] as const;
 
 export const USER_ROLE = {
-   USER:'user',
-   ADMIN:'admin',
-   MANAGER:'manager',
-   TRAINING_PROVIDER:'training-provider'
+   USER: 'user',
+   ADMIN: 'admin',
+   MANAGER: 'manager',
+   TRAINING_PROVIDER: 'training-provider'
 }
+

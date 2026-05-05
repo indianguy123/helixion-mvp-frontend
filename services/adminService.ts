@@ -1,5 +1,6 @@
 import { API } from "@/constants/api";
 import { api } from "@/lib/api";
+import { approveUserSchema } from "@/validations/admin";
 
 //using reset password- all user list
 export const getUsersAPI = async (params: {
@@ -16,3 +17,18 @@ export const getUsersAPI = async (params: {
 export const getPendingUserAPI = async () => {
   return await api.get(API.ADMIN.REGISTRATION)
 }
+
+//approve the user and assign role
+export const approveUserAPI = async (data: { userId: string, role: string }) => {
+  const parsed = approveUserSchema.safeParse(data);
+
+  if (!parsed.success) {
+    throw parsed.error; 
+  }
+
+  const { userId, role } = parsed.data;
+
+  return await api.patch(`${ API.ADMIN.USERS }/${ userId }`, {
+    role,
+  });
+};

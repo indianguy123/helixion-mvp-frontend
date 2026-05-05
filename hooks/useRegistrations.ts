@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FormattedRegistration } from '@/types/admin';
 import { transformRegistrationData } from '@/utils/adminHelpers';
 import { NETWORK_ERRORS } from '@/constants/errors';
@@ -10,34 +10,38 @@ interface UseRegistrationsReturn {
   registrations: FormattedRegistration[];
   loading: boolean;
   error: string | null;
+  refetch: () => Promise<void>;
 }
 
-/**
- * Custom hook for fetching and managing registration data
- * Implements proper error handling with user-friendly messages
- */
 export const useRegistrations = (): UseRegistrationsReturn => {
   const [registrations, setRegistrations] = useState<FormattedRegistration[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchRegistrations = async () => {
-      try {
-        const response = await getPendingUserAPI()
-        const formattedData = transformRegistrationData(response.data.data);
-        setRegistrations(formattedData);
-        setError(null);
-      } catch {
-        setError(NETWORK_ERRORS.CONNECTION_FAILED);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchRegistrations = useCallback(async () => {
+    setLoading(true);
 
-    fetchRegistrations();
+    try {
+      const response = await getPendingUserAPI();
+      const formattedData = transformRegistrationData(response.data.data);
+
+      setRegistrations(formattedData);
+      setError(null);
+    } catch {
+      setError(NETWORK_ERRORS.CONNECTION_FAILED);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  useEffect(() => {
+    fetchRegistrations();
+  }, [fetchRegistrations]);
 
-  return { registrations, loading, error };
+  return {
+    registrations,
+    loading,
+    error,
+    refetch: fetchRegistrations, 
+  };
 };

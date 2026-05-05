@@ -18,7 +18,7 @@ function getInitials(name: string): string {
 /**
  * Pending registrations table section with approve/deny actions
  */
-export default function PendingRegistrations({ registrations }: PendingRegistrationsProps) {
+export default function PendingRegistrations({ registrations,refetch }: PendingRegistrationsProps) {
   const { SECTIONS } = ADMIN_CONTENT.DASHBOARD;
 
   return (
@@ -43,6 +43,7 @@ export default function PendingRegistrations({ registrations }: PendingRegistrat
               </span>
             }
             iconBg={AVATAR_BACKGROUNDS[index % AVATAR_BACKGROUNDS.length]}
+            refetch={refetch}
           />
         ))}
       </div>

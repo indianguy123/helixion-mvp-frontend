@@ -62,7 +62,7 @@ export interface ActivityItemProps {
 }
 
 export interface RegistrationRowProps {
-  Id:string;
+  Id: string;
   name: string;
   email: string;
   date: string;
@@ -76,4 +76,5 @@ export interface RecentActivityProps {
 
 export interface PendingRegistrationsProps {
   registrations: FormattedRegistration[];
+  refetch: () => void;
 }
