@@ -14,7 +14,7 @@ export const ROUTES = {
   USERS: '/users',
   ROLES: '/roles',
   IMPORT: '/admin/dashboard/import',
-  RESETPASSWORD:'/admin/reset-password',
+  RESETPASSWORD: '/admin/reset-password',
   PROGRAMS: '/programs',
   ORGANIZATIONS: '/organizations',
   AUDIT: '/audit',
@@ -44,6 +44,8 @@ export interface NavigationSection {
 export const USER_ROLES = {
   ADMIN: 'admin',
   USER: 'user',
+  EMPLOYEE: 'employee',
+  TRAINING_PROVIDER: 'training-provider'
 } as const;
 
 // Role-based route access
@@ -61,3 +63,9 @@ export const ROLE_ACCESS = {
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD],
 } as const;
+
+
+export const DEFAULT_KEY = {
+  ENROLLMENTS: "enrollments",
+  DASHBOARD: "dashboard"
+}

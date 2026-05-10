@@ -2,7 +2,6 @@
 
 import { NavSection } from "@/types/employee";
 import { NAV_LABELS, NAV_SECTIONS } from "./content";
-import { BarChart3, Bell, FileText, LayoutDashboard, Settings, Shield, Users, Zap } from "lucide-react";
 import { ROUTES } from "./navigation";
 
 export const API_ENDPOINTS = {

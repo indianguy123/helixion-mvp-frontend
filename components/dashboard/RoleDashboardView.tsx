@@ -6,6 +6,8 @@ import { AvailableProgrammes } from "./AvailableProgrammes";
 import { fetchEmployeeDashboardData } from "@/utils/employeeService";
 import { t } from "@/lib/i18n";
 import { AppAlert } from "../shared/app-alert";
+import { USER_ROLES } from "@/constants/navigation";
+
 
 function EmployeeDashboardView() {
   const [data, setData] = useState<any>(null);
@@ -49,8 +51,10 @@ interface RoleDashboardViewProps {
 
 export function RoleDashboardView({ role }: RoleDashboardViewProps) {
   switch (role) {
-    case "manager":
-    case "employee":
+    case USER_ROLES.TRAINING_PROVIDER:
+
+      
+    case USER_ROLES.EMPLOYEE:
       return <EmployeeDashboardView />;
     default:
       return null;
