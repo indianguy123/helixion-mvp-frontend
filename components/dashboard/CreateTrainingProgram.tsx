@@ -4,25 +4,19 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, Upload, ArrowLeftRight } from "lucide-react";
+import { Upload, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import InputField, { Label } from "../ui/input";
 import Badge from "../ui/badge";
+import { t } from "@/lib/i18n";
+import { StayOption, StayType } from "@/types";
+import { STAY_TYPES } from "@/constants/content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface StayOption {
-  id: string;
-  label: string;
-  price: string;
-}
 
-interface StayType {
-  id: string;
-  label: string;
-  enabled: boolean;
-  options: StayOption[];
-}
+
+
 
 interface FormData {
   programTitle: string;
@@ -42,6 +36,8 @@ interface StayOptionRowProps {
   parentEnabled: boolean;
   onPriceChange: (id: string, price: string) => void;
 }
+
+//select price option shown like (residential - single and twin sharing , non-residential)
 
 function StayOptionRow({ option, parentEnabled, onPriceChange }: StayOptionRowProps) {
   return (
@@ -85,15 +81,15 @@ function LivePreview({ data }: LivePreviewProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-textSidebarMuted uppercase tracking-wider mb-0.5">Live preview</p>
-          <p className="text-xs text-textMuted">How participants will see this program</p>
+          <p className="text-xs text-textSidebarMuted uppercase tracking-wider mb-0.5">{t('programme.livePreview')}</p>
+          <p className="text-xs text-textMuted">{t('programme.howToSee')}</p>
         </div>
         <Button
           size="sm"
           variant="outline"
           className="text-xs h-7 px-3 border-borderDark text-textSecondary hover:bg-bgButton"
         >
-          Preview
+          {t('button.preview')}
         </Button>
       </div>
 
@@ -103,26 +99,26 @@ function LivePreview({ data }: LivePreviewProps) {
       <div className="flex-1 space-y-4">
         <div>
           <h3 className="text-lg font-semibold text-foreground leading-tight">
-            {data.programTitle || "Program title appears here"}
+            {data.programTitle || t('programme.defaultTitle')}
           </h3>
           <p className="text-sm text-textSidebarMuted mt-0.5">
-            {data.venue ? `Venue — ${ data.venue }` : "Venue — not set"}
+            {data.venue ? `Venue — ${ data.venue }` : t('programme.defaultVenue')}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-textSidebarMuted mb-1">Starts</p>
+            <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.start')}</p>
             <p className="text-sm text-textSecondary">{data.startDate || "—"}</p>
           </div>
           <div>
-            <p className="text-xs text-textSidebarMuted mb-1">Ends</p>
+            <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.end')}</p>
             <p className="text-sm text-textSecondary">{data.endDate || "—"}</p>
           </div>
         </div>
 
         <div>
-          <p className="text-xs text-textSidebarMuted mb-1">Capacity</p>
+          <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.capacity')}</p>
           <p className="text-sm text-textSecondary">
             {data.minParticipants || data.maxParticipants
               ? `${ data.minParticipants || "?" } / ${ data.maxParticipants || "?" }`
@@ -132,7 +128,7 @@ function LivePreview({ data }: LivePreviewProps) {
 
         {enabledStays.length > 0 && (
           <div>
-            <p className="text-xs text-textSidebarMuted mb-2">Fees</p>
+            <p className="text-xs text-textSidebarMuted mb-2">{t('programme.fields.fees')}</p>
             <div className="space-y-2">
               {enabledStays.map((stay) =>
                 stay.options.map((opt) => (
@@ -174,23 +170,7 @@ function LivePreview({ data }: LivePreviewProps) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-const DEFAULT_STAY_TYPES: StayType[] = [
-  {
-    id: "residential",
-    label: "Residential",
-    enabled: false,
-    options: [
-      { id: "single", label: "Single Occupancy", price: "" },
-      { id: "twin", label: "Twin Sharing", price: "" },
-    ],
-  },
-  {
-    id: "non-residential",
-    label: "Non-Residential",
-    enabled: false,
-    options: [{ id: "non-res-default", label: "Day Scholar", price: "" }],
-  },
-];
+
 
 export default function CreateTrainingProgram() {
   const [form, setForm] = useState<FormData>({
@@ -198,7 +178,7 @@ export default function CreateTrainingProgram() {
     startDate: "",
     endDate: "",
     venue: "",
-    stayTypes: DEFAULT_STAY_TYPES,
+    stayTypes: STAY_TYPES,
     brochureFile: null,
     minParticipants: "",
     maxParticipants: "",
@@ -251,9 +231,9 @@ export default function CreateTrainingProgram() {
     <div className="min-h-screen bg-bgMain px-6 py-8">
       {/* Page Header */}
       <div className="mb-6">
-        <h1 className="text-xl font-semibold text-foreground">Create new training program</h1>
+        <h1 className="text-xl font-semibold text-foreground">{t('programme.createpageTitle')}</h1>
         <p className="text-sm text-textSidebarMuted mt-0.5">
-          Publish a single program to the Helixon marketplace.
+          {t('programme.createpageDescription')}
         </p>
       </div>
 
@@ -263,8 +243,8 @@ export default function CreateTrainingProgram() {
         <div className="bg-bgCard border border-borderCard rounded-lg p-6 space-y-5">
           {/* Section label */}
           <div>
-            <p className="text-xs font-medium text-textSecondary mb-0.5">Program details</p>
-            <p className="text-xs text-textSidebarMuted">All fields are required unless marked optional.</p>
+            <p className="text-xs font-medium text-textSecondary mb-0.5">{t('programme.createdetailsTitle')}</p>
+            <p className="text-xs text-textSidebarMuted">{t('programme.createdetailsDescription')}</p>
           </div>
 
           <Separator className="bg-borderDark" />
@@ -272,13 +252,13 @@ export default function CreateTrainingProgram() {
           {/* Program Title */}
           <div className="grid grid-cols-[160px_1fr] items-start gap-4">
             <Label className="pt-2 text-sm text-textMuted">
-              Program title
+              {t('programme.fields.programTitle')}
             </Label>
 
             <InputField
               value={form.programTitle}
               onChange={(e) => handleField("programTitle", e.target.value)}
-              placeholder="e.g. Accounting and Auditing Principles"
+              placeholder= {t('programme.fields.programTitlePlaceholder')}
               className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
             />
           </div>
@@ -287,7 +267,7 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Program dates
+               {t('programme.fields.programDates')}
               </Label>
             </div>
 
@@ -313,14 +293,14 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Venue
+               {t('programme.fields.venue')}
               </Label>
             </div>
 
             <InputField
               value={form.venue}
               onChange={(e) => handleField("venue", e.target.value)}
-              placeholder="e.g. Hotel Ritz, Kolkata"
+              placeholder= {t('programme.fields.venuePlaceholder')}
               className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
             />
           </div>
@@ -329,11 +309,11 @@ export default function CreateTrainingProgram() {
             {/* Left Label */}
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Stay type
+                {t('programme.fields.stayType')}
               </Label>
 
               <p className="text-xs text-textSidebarMuted mt-0.5">
-                Program fee
+               {t('programme.fields.programFee')}
               </p>
             </div>
 
@@ -401,7 +381,7 @@ export default function CreateTrainingProgram() {
             {/* Left Label */}
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Attach brochure
+                {t('programme.fields.attachBrochure')}
               </Label>
             </div>
 
@@ -415,7 +395,7 @@ export default function CreateTrainingProgram() {
                 )}
               >
                 <Upload className="w-3.5 h-3.5" />
-                Browse
+                {t('button.browse')}
               </label>
 
               <input
@@ -439,7 +419,7 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Minimum participants
+                {t('programme.fields.minimumParticipants')}
               </Label>
             </div>
 
@@ -455,7 +435,7 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                Maximum participants
+                 {t('programme.fields.maximumParticipants')}
               </Label>
             </div>
 
@@ -476,13 +456,13 @@ export default function CreateTrainingProgram() {
               onClick={handleSaveDraft}
               className="border-borderDark text-textSecondary hover:bg-bgButton hover:text-foreground h-9 px-4 text-sm"
             >
-              Save draft
+             {t('button.saveDraft')}
             </Button>
             <Button
               onClick={handlePublish}
               className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm"
             >
-              Publish program
+              {t('programme.publishProgram')}
             </Button>
           </div>
         </div>
