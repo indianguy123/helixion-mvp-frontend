@@ -4,13 +4,7 @@ import { NavSection } from "@/types/employee";
 import { NAV_LABELS, NAV_SECTIONS } from "./content";
 import { ROUTES } from "./navigation";
 
-export const API_ENDPOINTS = {
-  REGISTRATIONS: '/admin/registrations',
-  USERS: '/admin/users',
-  USERS_SEARCH: '/admin/users/search',
-  BATCH_CREATE: '/admin/users/batch',
-  DEACTIVATE_USER: (id: string) => `/admin/users/${id}/deactivate`,
-} as const;
+
 
 // Activity dot colors using semantic Tailwind classes
 export const ACTIVITY_DOT_COLORS = {

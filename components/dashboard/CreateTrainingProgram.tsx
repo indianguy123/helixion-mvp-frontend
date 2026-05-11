@@ -9,7 +9,10 @@ import { cn } from "@/lib/utils";
 import InputField, { Label } from "../ui/input";
 import Badge from "../ui/badge";
 import { t } from "@/lib/i18n";
-import { StayOption, StayType } from "@/types";
+import { PROGRAM_SAVED_STATUS, StayOption } from "@/types";
+import { useCreateProgram } from "@/hooks/useCreateProgram";
+import AppModal from "../ui/app-modal";
+import { createProgramFormData, INITIAL_FORM_STATE } from "@/constants/training-provider";
 import { STAY_TYPES } from "@/constants/content";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -18,16 +21,7 @@ import { STAY_TYPES } from "@/constants/content";
 
 
 
-interface FormData {
-  programTitle: string;
-  startDate: string;
-  endDate: string;
-  venue: string;
-  stayTypes: StayType[];
-  brochureFile: File | null;
-  minParticipants: string;
-  maxParticipants: string;
-}
+
 
 
 
@@ -45,8 +39,8 @@ function StayOptionRow({ option, parentEnabled, onPriceChange }: StayOptionRowPr
       <div className="flex items-center gap-2">
         <Checkbox
           id={option.id}
-          checked={parentEnabled}
-          disabled={!parentEnabled}
+          checked={!!option.price}
+          disabled
           className="border-borderDark data-[state=checked]:bg-primary data-[state=checked]:border-primary w-3.5 h-3.5"
         />
         <label htmlFor={option.id} className="text-sm text-textSecondary cursor-pointer select-none">
@@ -70,7 +64,7 @@ function StayOptionRow({ option, parentEnabled, onPriceChange }: StayOptionRowPr
 // ─── Live Preview ─────────────────────────────────────────────────────────────
 
 interface LivePreviewProps {
-  data: FormData;
+  data: createProgramFormData;
 }
 
 function LivePreview({ data }: LivePreviewProps) {
@@ -173,20 +167,19 @@ function LivePreview({ data }: LivePreviewProps) {
 
 
 export default function CreateTrainingProgram() {
-  const [form, setForm] = useState<FormData>({
-    programTitle: "",
-    startDate: "",
-    endDate: "",
-    venue: "",
-    stayTypes: STAY_TYPES,
-    brochureFile: null,
-    minParticipants: "",
-    maxParticipants: "",
-  });
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+
+  const [actionType, setActionType] = useState<
+    PROGRAM_SAVED_STATUS | null
+  >(null);
+
+  const [form, setForm] = useState<createProgramFormData>(INITIAL_FORM_STATE);
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 
-  const handleField = <K extends keyof FormData>(key: K, value: FormData[K]) =>
+  const handleField = <K extends keyof createProgramFormData>(key: K, value: createProgramFormData[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
   const toggleStayType = (stayId: string) => {
@@ -212,17 +205,86 @@ export default function CreateTrainingProgram() {
     }));
   };
 
+  const { createProgram, loading, error } = useCreateProgram();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     handleField("brochureFile", file);
   };
 
-  const handleSaveDraft = () => {
-    console.log("Save draft:", form);
+  const openConfirmModal = (type: PROGRAM_SAVED_STATUS) => {
+    setActionType(type);
+    setConfirmOpen(true);
   };
 
-  const handlePublish = () => {
-    console.log("Publish:", form);
+  const handleConfirmAction = async () => {
+    if (!actionType) return;
+
+    const residential = form.stayTypes.find(
+      (stay) => stay.id === "residential"
+    );
+
+    const nonResidential = form.stayTypes.find(
+      (stay) => stay.id === "non-residential"
+    );
+
+    // IMPORTANT:
+    // use actual option positions instead of wrong IDs
+
+    const singleOccupancyFee =
+      residential?.enabled &&
+        residential.options[0]?.price
+        ? Number(residential.options[0].price)
+        : undefined;
+
+    const twinSharingFee =
+      residential?.enabled &&
+        residential.options[1]?.price
+        ? Number(residential.options[1].price)
+        : undefined;
+
+    const nonResidentialFee =
+      nonResidential?.enabled &&
+        nonResidential.options[0]?.price
+        ? Number(nonResidential.options[0].price)
+        : undefined;
+
+    const payload = {
+      title: form.programTitle,
+
+      startDate: form.startDate || undefined,
+      endDate: form.endDate || undefined,
+      venue: form.venue || undefined,
+
+      singleOccupancyFee,
+      twinSharingFee,
+      nonResidentialFee,
+
+      brochure: form.brochureFile,
+
+      minParticipants: form.minParticipants
+        ? Number(form.minParticipants)
+        : undefined,
+
+      maxParticipants: form.maxParticipants
+        ? Number(form.maxParticipants)
+        : undefined,
+
+      status: actionType,
+    };
+
+
+    const success = await createProgram(payload);
+
+    if (success) {
+      setForm({
+        ...INITIAL_FORM_STATE,
+        stayTypes: structuredClone(STAY_TYPES),
+      });
+
+      setConfirmOpen(false);
+      setSuccessOpen(true);
+    }
   };
 
   // ── Render ───────────────────────────────────────────────────────────────────
@@ -258,7 +320,7 @@ export default function CreateTrainingProgram() {
             <InputField
               value={form.programTitle}
               onChange={(e) => handleField("programTitle", e.target.value)}
-              placeholder= {t('programme.fields.programTitlePlaceholder')}
+              placeholder={t('programme.fields.programTitlePlaceholder')}
               className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
             />
           </div>
@@ -267,7 +329,7 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-               {t('programme.fields.programDates')}
+                {t('programme.fields.programDates')}
               </Label>
             </div>
 
@@ -293,14 +355,14 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-               {t('programme.fields.venue')}
+                {t('programme.fields.venue')}
               </Label>
             </div>
 
             <InputField
               value={form.venue}
               onChange={(e) => handleField("venue", e.target.value)}
-              placeholder= {t('programme.fields.venuePlaceholder')}
+              placeholder={t('programme.fields.venuePlaceholder')}
               className="bg-inputBg border-borderDark text-textSecondary h-9 text-sm"
             />
           </div>
@@ -313,7 +375,7 @@ export default function CreateTrainingProgram() {
               </Label>
 
               <p className="text-xs text-textSidebarMuted mt-0.5">
-               {t('programme.fields.programFee')}
+                {t('programme.fields.programFee')}
               </p>
             </div>
 
@@ -435,7 +497,7 @@ export default function CreateTrainingProgram() {
           <div className="grid grid-cols-[160px_1fr] gap-4 items-start">
             <div className="pt-2">
               <Label className="text-sm text-textMuted">
-                 {t('programme.fields.maximumParticipants')}
+                {t('programme.fields.maximumParticipants')}
               </Label>
             </div>
 
@@ -453,16 +515,19 @@ export default function CreateTrainingProgram() {
           <div className="flex items-center justify-end gap-3 pt-1">
             <Button
               variant="outline"
-              onClick={handleSaveDraft}
+              onClick={() => openConfirmModal(PROGRAM_SAVED_STATUS.DRAFT)}
+              disabled={loading}
               className="border-borderDark text-textSecondary hover:bg-bgButton hover:text-foreground h-9 px-4 text-sm"
             >
-             {t('button.saveDraft')}
+              {t("button.saveDraft")}
             </Button>
+
             <Button
-              onClick={handlePublish}
+              onClick={() => openConfirmModal(PROGRAM_SAVED_STATUS.PUBLISHED)}
+              disabled={loading}
               className="bg-primary hover:bg-primaryDark text-white h-9 px-4 text-sm"
             >
-              {t('programme.publishProgram')}
+              {t("programme.publishProgram")}
             </Button>
           </div>
         </div>
@@ -470,6 +535,49 @@ export default function CreateTrainingProgram() {
         {/* ── Right: Live Preview ─────────────────────────────────────────────── */}
         <LivePreview data={form} />
       </div>
+      {/* CONFIRM MODAL */}
+      <AppModal
+        isOpen={confirmOpen}
+        type="confirm"
+        title={
+          actionType === PROGRAM_SAVED_STATUS.DRAFT
+            ? "Save Draft?"
+            : "Publish Program?"
+        }
+        description={
+          actionType === PROGRAM_SAVED_STATUS.DRAFT
+            ? "Are you sure you want to save this program as draft?"
+            : "Are you sure you want to publish this program?"
+        }
+        confirmLabel={
+          actionType === PROGRAM_SAVED_STATUS.DRAFT
+            ? "Save Draft"
+            : "Publish"
+        }
+        cancelLabel="Cancel"
+        loading={loading}
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={handleConfirmAction}
+        error={error}
+      />
+
+      {/* SUCCESS MODAL */}
+      <AppModal
+        isOpen={successOpen}
+        type="success"
+        title={
+          actionType === PROGRAM_SAVED_STATUS.DRAFT
+            ? "Draft Saved"
+            : "Program Published"
+        }
+        description={
+          actionType === PROGRAM_SAVED_STATUS.DRAFT
+            ? "Your training program has been saved successfully as draft."
+            : "Your training program has been published successfully."
+        }
+        doneLabel="Done"
+        onDone={() => setSuccessOpen(false)}
+      />
     </div>
   );
 }

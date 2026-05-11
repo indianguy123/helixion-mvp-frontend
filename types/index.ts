@@ -52,3 +52,10 @@ export interface StayType {
   enabled: boolean;
   options: StayOption[];
 }
+
+//program saved status
+
+export enum PROGRAM_SAVED_STATUS {
+  DRAFT = "draft",
+  PUBLISHED = "published",
+}

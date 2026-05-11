@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { resetPasswordAPI } from '@/utils/authService';
+import { resetPasswordAPI } from '@/services/authService';
 
 export const useResetPassword = () => {
   const [loading, setLoading] = useState(false);
