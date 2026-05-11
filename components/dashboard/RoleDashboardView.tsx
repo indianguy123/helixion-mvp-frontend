@@ -8,6 +8,7 @@ import { t } from "@/lib/i18n";
 import { AppAlert } from "../shared/app-alert";
 import { USER_ROLES } from "@/constants/navigation";
 
+//Employee Dashboard
 
 function EmployeeDashboardView() {
   const [data, setData] = useState<any>(null);
@@ -45,6 +46,23 @@ function EmployeeDashboardView() {
   );
 }
 
+
+//function Training-provider Dashboard 
+
+function TainingProviderDashboardView(){
+  return (
+    <>
+    <p>Dashboard</p>
+    </>
+  )
+}
+
+
+
+
+
+
+
 interface RoleDashboardViewProps {
   role: string;
 }
@@ -52,7 +70,7 @@ interface RoleDashboardViewProps {
 export function RoleDashboardView({ role }: RoleDashboardViewProps) {
   switch (role) {
     case USER_ROLES.TRAINING_PROVIDER:
-
+        return <TainingProviderDashboardView />
       
     case USER_ROLES.EMPLOYEE:
       return <EmployeeDashboardView />;
