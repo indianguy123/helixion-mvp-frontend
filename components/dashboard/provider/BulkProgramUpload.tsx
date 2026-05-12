@@ -3,8 +3,10 @@
 import { useState, useRef } from 'react';
 import FileDropzone from '@/components/shared/FileDropzone';
 import DataTable from '@/components/shared/data-table';
+import AppModal from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
 import { providerService, BulkUploadError } from '@/services/provider.service';
+import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 
 const EXPECTED_COLUMNS = [
@@ -21,6 +23,7 @@ export default function BulkProgramUpload() {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<any[]>([]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [uploadResult, setUploadResult] = useState<{
     insertedCount: number;
     failedCount: number;
@@ -30,7 +33,7 @@ export default function BulkProgramUpload() {
 
   const handleFileSelected = async (file: File) => {
     if (!file.name.endsWith('.csv')) {
-      toast.error('Please upload a valid CSV file.');
+      toast.error(t('bulkProgram.errorInvalidFile'));
       return;
     }
 
@@ -42,7 +45,7 @@ export default function BulkProgramUpload() {
       const text = await file.text();
       const lines = text.split('\n').filter(line => line.trim() !== '');
       if (lines.length < 2) {
-        toast.error('CSV file appears to be empty or invalid.');
+        toast.error(t('bulkProgram.errorEmptyFile'));
         setIsProcessing(false);
         return;
       }
@@ -59,7 +62,7 @@ export default function BulkProgramUpload() {
 
       setPreviewData(parsedData);
     } catch (err) {
-      toast.error('Failed to parse CSV preview.');
+      toast.error(t('bulkProgram.errorParseFailed'));
     } finally {
       setIsProcessing(false);
     }
@@ -72,14 +75,9 @@ export default function BulkProgramUpload() {
       const response = await providerService.bulkUploadPrograms(selectedFile);
       const result = response.data;
       setUploadResult(result);
-
-      if (result.failedCount > 0) {
-        toast.warning(`${result.insertedCount} programs created, ${result.failedCount} rows had errors.`);
-      } else {
-        toast.success(`${result.insertedCount} programs created successfully!`);
-      }
+      setShowSuccessModal(true);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to upload programs. Please try again.');
+      toast.error(error.response?.data?.message || t('bulkProgram.errorUploadFailed'));
     } finally {
       setIsUploading(false);
     }
@@ -89,6 +87,7 @@ export default function BulkProgramUpload() {
     setSelectedFile(null);
     setPreviewData([]);
     setUploadResult(null);
+    setShowSuccessModal(false);
   };
 
   const handleDownloadSample = () => {
@@ -125,28 +124,62 @@ export default function BulkProgramUpload() {
     },
   ];
 
+  // Build modal stats and description from upload result
+  const modalStats = uploadResult
+    ? [
+        { label: t('bulkProgram.programsCreated', { count: uploadResult.insertedCount }), variant: 'green' as const },
+        ...(uploadResult.failedCount > 0
+          ? [{ label: t('bulkProgram.rowsFailed', { count: uploadResult.failedCount }), variant: 'orange' as const }]
+          : []),
+      ]
+    : [];
+
+  const modalDescription = uploadResult
+    ? uploadResult.failedCount > 0
+      ? t('bulkProgram.partialSuccessDescription', {
+          inserted: uploadResult.insertedCount,
+          failed: uploadResult.failedCount,
+        })
+      : t('bulkProgram.successDescription', { count: uploadResult.insertedCount })
+    : '';
+
   return (
     <div className="w-full flex flex-col text-white font-sans">
+
+      {/* Success Modal */}
+      <AppModal
+        isOpen={showSuccessModal}
+        type="success"
+        title={t('bulkProgram.successTitle')}
+        description={modalDescription}
+        stats={modalStats}
+        doneLabel={t('button.done')}
+        onDone={handleReset}
+      />
 
       {/* Top Page Title with Try sample CSV at top-right */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h1 className="text-2xl font-semibold mb-1 text-slate-100">Bulk Upload Programs</h1>
+          <h1 className="text-2xl font-semibold mb-1 text-slate-100">
+            {t('bulkProgram.pageTitle')}
+          </h1>
           <p className="text-[10px] text-white/40 tracking-wider font-semibold uppercase">
-            PROGRAMS - BATCH PUBLISH
+            {t('bulkProgram.breadcrumb')}
           </p>
         </div>
         <Button variant="link" onClick={handleDownloadSample}>
-          Try sample CSV
+          {t('bulkProgram.trySample')}
         </Button>
       </div>
 
       {/* Main Upload Section */}
       <div className="flex flex-col gap-5">
         <div>
-          <h2 className="text-lg font-medium mb-0.5 text-slate-200">Bulk upload programs</h2>
+          <h2 className="text-lg font-medium mb-0.5 text-slate-200">
+            {t('bulkProgram.sectionTitle')}
+          </h2>
           <p className="text-xs text-white/50">
-            Upload a CSV to create many programs at once. Preview before publishing.
+            {t('bulkProgram.sectionDescription')}
           </p>
         </div>
 
@@ -154,9 +187,11 @@ export default function BulkProgramUpload() {
         {uploadResult && (
           <div className="w-full bg-[#111827] rounded-xl border border-white/5 p-6 shadow-lg">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-md font-semibold text-slate-200">Upload Results</h3>
+              <h3 className="text-md font-semibold text-slate-200">
+                {t('bulkProgram.resultsTitle')}
+              </h3>
               <Button variant="ghost" onClick={handleReset}>
-                Upload Another
+                {t('bulkProgram.uploadAnother')}
               </Button>
             </div>
 
@@ -164,14 +199,14 @@ export default function BulkProgramUpload() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
                 <span className="text-sm text-white/70">
-                  {uploadResult.insertedCount} programs created
+                  {t('bulkProgram.programsCreated', { count: uploadResult.insertedCount })}
                 </span>
               </div>
               {uploadResult.failedCount > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
                   <span className="text-sm text-white/70">
-                    {uploadResult.failedCount} rows failed
+                    {t('bulkProgram.rowsFailed', { count: uploadResult.failedCount })}
                   </span>
                 </div>
               )}
@@ -179,7 +214,9 @@ export default function BulkProgramUpload() {
 
             {uploadResult.errors.length > 0 && (
               <div className="mt-4">
-                <h4 className="text-sm font-medium text-red-400 mb-2">Row-level errors</h4>
+                <h4 className="text-sm font-medium text-red-400 mb-2">
+                  {t('bulkProgram.rowErrors')}
+                </h4>
                 <DataTable data={uploadResult.errors} columns={errorColumns} />
               </div>
             )}
@@ -191,14 +228,14 @@ export default function BulkProgramUpload() {
           <div className="w-full bg-[#111827] rounded-xl border border-white/5 p-6 shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-md font-semibold text-slate-200">
-                Preview: {selectedFile.name} (Showing top 5 rows)
+                {t('bulkProgram.preview', { fileName: selectedFile.name })}
               </h3>
               <div className="flex gap-3">
                 <Button variant="ghost" onClick={handleReset} disabled={isUploading}>
-                  Cancel
+                  {t('bulkProgram.cancelButton')}
                 </Button>
                 <Button variant="default" onClick={handlePublish} disabled={isUploading}>
-                  {isUploading ? 'Publishing...' : 'Publish Programs'}
+                  {isUploading ? t('bulkProgram.publishing') : t('bulkProgram.publishButton')}
                 </Button>
               </div>
             </div>
@@ -217,15 +254,15 @@ export default function BulkProgramUpload() {
               fileInputRef={fileInputRef}
               label={
                 <span className="font-medium text-slate-200">
-                  Drop your CSV here, or click to browse
+                  {t('bulkProgram.dropLabel')}
                 </span>
               }
-              hint={`Expected columns: ${EXPECTED_COLUMNS.join(', ')}`}
+              hint={t('bulkProgram.expectedColumns')}
             />
 
             {/* Footer Hint */}
             <p className="text-[11px] text-white/30 mt-5 text-center px-2">
-              Max 500 rows per file - Duplicates will be flagged in preview
+              {t('bulkProgram.footerHint')}
             </p>
           </div>
         )}

@@ -159,5 +159,31 @@
          "doneButton": "Done",
          "noValidUsers": "No valid users to process"
       }
+   },
+   "bulkProgram": {
+      "pageTitle": "Bulk Upload Programs",
+      "breadcrumb": "PROGRAMS - BATCH PUBLISH",
+      "sectionTitle": "Bulk upload programs",
+      "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
+      "trySample": "Try sample CSV",
+      "dropLabel": "Drop your CSV here, or click to browse",
+      "expectedColumns": "Expected columns: title, startDate, endDate, venue, isResidential, stayType, singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl, minParticipants, maxParticipants, status",
+      "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
+      "preview": "Preview: {fileName} (Showing top 5 rows)",
+      "publishButton": "Publish Programs",
+      "publishing": "Publishing...",
+      "cancelButton": "Cancel",
+      "resultsTitle": "Upload Results",
+      "uploadAnother": "Upload Another",
+      "programsCreated": "{count} programs created",
+      "rowsFailed": "{count} rows failed",
+      "rowErrors": "Row-level errors",
+      "successTitle": "Programs published!",
+      "successDescription": "{count} programs have been created successfully and are ready for review.",
+      "partialSuccessDescription": "{inserted} programs created. {failed} rows had validation errors.",
+      "errorInvalidFile": "Please upload a valid CSV file.",
+      "errorEmptyFile": "CSV file appears to be empty or invalid.",
+      "errorParseFailed": "Failed to parse CSV preview.",
+      "errorUploadFailed": "Failed to upload programs. Please try again."
    }
 }
