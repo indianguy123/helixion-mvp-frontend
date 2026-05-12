@@ -22,6 +22,10 @@ export const ROUTES = {
   INTEGRATIONS: '/integrations',
   NOTIFICATIONS: '/notifications',
   DEACTIVATE_USER: '/admin/dashboard/deactivate',
+
+  // Provider routes
+  PROVIDER_DASHBOARD: '/dashboard',
+  PROVIDER_BULK_UPLOAD: '/dashboard/programs/bulk',
 } as const;
 
 // Navigation item type - using Lucide icon type
@@ -43,7 +47,8 @@ export interface NavigationSection {
 // User roles
 export const USER_ROLES = {
   ADMIN: 'admin',
-  USER: 'user',
+  USER: 'employee',
+  PROVIDER: 'training-provider',
 } as const;
 
 // Role-based route access
@@ -60,4 +65,5 @@ export const ROLE_ACCESS = {
     ROUTES.AUDIT,
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD],
+  [USER_ROLES.PROVIDER]: [ROUTES.PROVIDER_DASHBOARD, ROUTES.PROVIDER_BULK_UPLOAD],
 } as const;
