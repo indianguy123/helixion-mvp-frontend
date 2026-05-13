@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Award, BarChart3, Bell, BookOpen, Download, FileText, LayoutDashboard, PlusCircle, Search, Settings, Shield, Upload, UploadCloud, UserCircle, Users, Zap, KeyRound  } from 'lucide-react';
 import { NavItem } from '@/types';
 import { AppAvatar } from './avatar';
+import CountBadge from './count-badge';
 
 
 //  ICON MAP (IMPORTANT)
@@ -97,7 +98,11 @@ function SidebarNavItem({ item, isActive, onClick }: any) {
         />
       )}
 
-      <span>{item.label}</span>
+      <span className="flex-1">{item.label}</span>
+
+      {item.badge != null && item.badge > 0 && (
+        <CountBadge count={item.badge} variant="blue" />
+      )}
     </>
   );
 

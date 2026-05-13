@@ -26,6 +26,7 @@ export const ROUTES = {
   // Provider routes
   PROVIDER_DASHBOARD: '/dashboard',
   PROVIDER_BULK_UPLOAD: '/dashboard/programs/bulk',
+  PROVIDER_DRAFTS: '/dashboard/programs/drafts',
 } as const;
 
 // Navigation item type - using Lucide icon type
@@ -65,5 +66,5 @@ export const ROLE_ACCESS = {
     ROUTES.AUDIT,
   ],
   [USER_ROLES.USER]: [ROUTES.DASHBOARD],
-  [USER_ROLES.PROVIDER]: [ROUTES.PROVIDER_DASHBOARD, ROUTES.PROVIDER_BULK_UPLOAD],
+  [USER_ROLES.PROVIDER]: [ROUTES.PROVIDER_DASHBOARD, ROUTES.PROVIDER_BULK_UPLOAD, ROUTES.PROVIDER_DRAFTS],
 } as const;
