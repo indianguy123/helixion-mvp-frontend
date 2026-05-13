@@ -162,6 +162,8 @@
    },
    "bulkProgram": {
       "pageTitle": "Bulk Upload Programs",
+      "pageDescription": "Upload a CSV to create many programs at once.",
+      "pageTitleFull": "Bulk Upload Programs | Helixion Training Provider",
       "breadcrumb": "PROGRAMS - BATCH PUBLISH",
       "sectionTitle": "Bulk upload programs",
       "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
@@ -184,6 +186,5 @@
       "errorInvalidFile": "Please upload a valid CSV file.",
       "errorEmptyFile": "CSV file appears to be empty or invalid.",
       "errorParseFailed": "Failed to parse CSV preview.",
-      "errorUploadFailed": "Failed to upload programs. Please try again."
    }
 }

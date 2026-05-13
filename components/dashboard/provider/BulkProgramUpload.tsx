@@ -1,22 +1,17 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import FileDropzone from '@/components/shared/FileDropzone';
-import DataTable from '@/components/shared/data-table';
 import AppModal from '@/components/ui/app-modal';
-import { Button } from '@/components/ui/button';
 import { providerService, BulkUploadError } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
+import Papa from 'papaparse';
+import { PROGRAM_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
 
-const EXPECTED_COLUMNS = [
-  'title', 'startDate', 'endDate', 'venue', 'isResidential', 'stayType',
-  'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
-  'brochureUrl', 'minParticipants', 'maxParticipants', 'status',
-];
-
-const SAMPLE_CSV_HEADER = EXPECTED_COLUMNS.join(',');
-const SAMPLE_CSV_ROW = 'Leadership Workshop,2026-06-01,2026-06-03,Mumbai,true,single,15000,12000,8000,,10,50,draft';
+import UploadHeader from './UploadHeader';
+import UploadDropzone from './UploadDropzone';
+import UploadPreview from './UploadPreview';
+import UploadResults from './UploadResults';
 
 export default function BulkProgramUpload() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -31,7 +26,7 @@ export default function BulkProgramUpload() {
   } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelected = async (file: File) => {
+  const handleFileSelected = (file: File) => {
     if (!file.name.endsWith('.csv')) {
       toast.error(t('bulkProgram.errorInvalidFile'));
       return;
@@ -41,31 +36,28 @@ export default function BulkProgramUpload() {
     setSelectedFile(file);
     setUploadResult(null);
 
-    try {
-      const text = await file.text();
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-      if (lines.length < 2) {
-        toast.error(t('bulkProgram.errorEmptyFile'));
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      preview: 5, // Only preview the first 5 rows
+      complete: (results) => {
         setIsProcessing(false);
-        return;
-      }
-
-      const headers = lines[0].split(',').map(h => h.trim());
-      const parsedData = lines.slice(1, 6).map(line => {
-        const values = line.split(',');
-        const obj: any = {};
-        headers.forEach((header, index) => {
-          obj[header] = values[index]?.trim() || '';
-        });
-        return obj;
-      });
-
-      setPreviewData(parsedData);
-    } catch (err) {
-      toast.error(t('bulkProgram.errorParseFailed'));
-    } finally {
-      setIsProcessing(false);
-    }
+        if (results.errors.length > 0 && results.data.length === 0) {
+          toast.error(t('bulkProgram.errorParseFailed'));
+          return;
+        }
+        if (results.data.length === 0) {
+          toast.error(t('bulkProgram.errorEmptyFile'));
+          return;
+        }
+        setPreviewData(results.data);
+      },
+      error: (error) => {
+        setIsProcessing(false);
+        toast.error(t('bulkProgram.errorParseFailed'));
+        console.error(error);
+      },
+    });
   };
 
   const handlePublish = async () => {
@@ -77,7 +69,9 @@ export default function BulkProgramUpload() {
       setUploadResult(result);
       setShowSuccessModal(true);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || t('bulkProgram.errorUploadFailed'));
+      toast.error(
+        error.response?.data?.message || t('bulkProgram.errorUploadFailed')
+      );
     } finally {
       setIsUploading(false);
     }
@@ -91,8 +85,8 @@ export default function BulkProgramUpload() {
   };
 
   const handleDownloadSample = () => {
-    const csvContent = `${SAMPLE_CSV_HEADER}\n${SAMPLE_CSV_ROW}`;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const csvContent = `${PROGRAM_CSV_COLUMNS.join(',')}\n${SAMPLE_CSV_ROW}`;
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -101,35 +95,24 @@ export default function BulkProgramUpload() {
     URL.revokeObjectURL(url);
   };
 
-  const previewColumns = previewData.length > 0
-    ? Object.keys(previewData[0]).map(key => ({
-        header: key,
-        render: (row: any) => <span className="text-sm">{row[key]}</span>
-      }))
-    : [];
-
-  const errorColumns = [
-    { header: 'Row', render: (err: BulkUploadError) => <span className="text-sm font-medium">{err.row}</span> },
-    {
-      header: 'Issues',
-      render: (err: BulkUploadError) => (
-        <ul className="list-disc list-inside text-sm">
-          {err.errors.map((e, i) => (
-            <li key={i} className="text-red-400">
-              <span className="font-medium text-white/70">{e.path}</span>: {e.message}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-  ];
-
   // Build modal stats and description from upload result
   const modalStats = uploadResult
     ? [
-        { label: t('bulkProgram.programsCreated', { count: uploadResult.insertedCount }), variant: 'green' as const },
+        {
+          label: t('bulkProgram.programsCreated', {
+            count: uploadResult.insertedCount,
+          }),
+          variant: 'green' as const,
+        },
         ...(uploadResult.failedCount > 0
-          ? [{ label: t('bulkProgram.rowsFailed', { count: uploadResult.failedCount }), variant: 'orange' as const }]
+          ? [
+              {
+                label: t('bulkProgram.rowsFailed', {
+                  count: uploadResult.failedCount,
+                }),
+                variant: 'orange' as const,
+              },
+            ]
           : []),
       ]
     : [];
@@ -140,13 +123,13 @@ export default function BulkProgramUpload() {
           inserted: uploadResult.insertedCount,
           failed: uploadResult.failedCount,
         })
-      : t('bulkProgram.successDescription', { count: uploadResult.insertedCount })
+      : t('bulkProgram.successDescription', {
+          count: uploadResult.insertedCount,
+        })
     : '';
 
   return (
     <div className="w-full flex flex-col text-white font-sans">
-
-      {/* Success Modal */}
       <AppModal
         isOpen={showSuccessModal}
         type="success"
@@ -157,116 +140,25 @@ export default function BulkProgramUpload() {
         onDone={handleReset}
       />
 
-      {/* Top Page Title with Try sample CSV at top-right */}
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold mb-1 text-slate-100">
-            {t('bulkProgram.pageTitle')}
-          </h1>
-          <p className="text-[10px] text-white/40 tracking-wider font-semibold uppercase">
-            {t('bulkProgram.breadcrumb')}
-          </p>
-        </div>
-        <Button variant="link" onClick={handleDownloadSample}>
-          {t('bulkProgram.trySample')}
-        </Button>
-      </div>
+      <UploadHeader onDownloadSample={handleDownloadSample} />
 
-      {/* Main Upload Section */}
-      <div className="flex flex-col gap-5">
-        <div>
-          <h2 className="text-lg font-medium mb-0.5 text-slate-200">
-            {t('bulkProgram.sectionTitle')}
-          </h2>
-          <p className="text-xs text-white/50">
-            {t('bulkProgram.sectionDescription')}
-          </p>
-        </div>
-
-        {/* Upload Results */}
-        {uploadResult && (
-          <div className="w-full bg-[#111827] rounded-xl border border-white/5 p-6 shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-md font-semibold text-slate-200">
-                {t('bulkProgram.resultsTitle')}
-              </h3>
-              <Button variant="ghost" onClick={handleReset}>
-                {t('bulkProgram.uploadAnother')}
-              </Button>
-            </div>
-
-            <div className="flex gap-6 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                <span className="text-sm text-white/70">
-                  {t('bulkProgram.programsCreated', { count: uploadResult.insertedCount })}
-                </span>
-              </div>
-              {uploadResult.failedCount > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <span className="text-sm text-white/70">
-                    {t('bulkProgram.rowsFailed', { count: uploadResult.failedCount })}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {uploadResult.errors.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-medium text-red-400 mb-2">
-                  {t('bulkProgram.rowErrors')}
-                </h4>
-                <DataTable data={uploadResult.errors} columns={errorColumns} />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Preview Table */}
-        {!uploadResult && selectedFile && previewData.length > 0 && (
-          <div className="w-full bg-[#111827] rounded-xl border border-white/5 p-6 shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-md font-semibold text-slate-200">
-                {t('bulkProgram.preview', { fileName: selectedFile.name })}
-              </h3>
-              <div className="flex gap-3">
-                <Button variant="ghost" onClick={handleReset} disabled={isUploading}>
-                  {t('bulkProgram.cancelButton')}
-                </Button>
-                <Button variant="default" onClick={handlePublish} disabled={isUploading}>
-                  {isUploading ? t('bulkProgram.publishing') : t('bulkProgram.publishButton')}
-                </Button>
-              </div>
-            </div>
-
-            <DataTable data={previewData} columns={previewColumns} />
-          </div>
-        )}
-
-        {/* Dropzone (initial state) */}
-        {!uploadResult && !selectedFile && (
-          <div className="w-full bg-[#111827] rounded-xl border border-white/5 px-6 py-10 shadow-lg">
-            <FileDropzone
-              accept=".csv"
-              onFileSelected={handleFileSelected}
-              isProcessing={isProcessing}
-              fileInputRef={fileInputRef}
-              label={
-                <span className="font-medium text-slate-200">
-                  {t('bulkProgram.dropLabel')}
-                </span>
-              }
-              hint={t('bulkProgram.expectedColumns')}
-            />
-
-            {/* Footer Hint */}
-            <p className="text-[11px] text-white/30 mt-5 text-center px-2">
-              {t('bulkProgram.footerHint')}
-            </p>
-          </div>
-        )}
-      </div>
+      {uploadResult ? (
+        <UploadResults uploadResult={uploadResult} onReset={handleReset} />
+      ) : selectedFile && previewData.length > 0 ? (
+        <UploadPreview
+          fileName={selectedFile.name}
+          previewData={previewData}
+          isUploading={isUploading}
+          onCancel={handleReset}
+          onPublish={handlePublish}
+        />
+      ) : (
+        <UploadDropzone
+          isProcessing={isProcessing}
+          onFileSelected={handleFileSelected}
+          fileInputRef={fileInputRef}
+        />
+      )}
     </div>
   );
 }
