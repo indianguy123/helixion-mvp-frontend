@@ -26,7 +26,7 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
 
   const checkAuth = useCallback(async (): Promise<boolean> => {
     try {
-      const token = getAccessToken();
+      const token = await getAccessToken();
 
       if (!token) {
         setState({ user: null, isAuthenticated: false, isLoading: false });
@@ -97,7 +97,7 @@ function decodeToken(token: string): {
   sub?: string; 
   username?: string; 
   email?: string; 
-  role?: typeof USER_ROLES.ADMIN | typeof USER_ROLES.USER;
+  role?: string;
   exp?: number;
 } | null {
   try {

@@ -1,6 +1,6 @@
 import { AlertCircle, CheckCircle2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Alert, AlertDescription, AlertTitle } from "../ui/Alert";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 type AppAlertProps = {
   title?: string;
