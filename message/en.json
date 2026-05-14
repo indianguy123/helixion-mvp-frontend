@@ -227,6 +227,9 @@
       "labelSingleOccupancyFee": "SINGLE OCCUPANCY FEE (₹)",
       "labelTwinSharingFee": "TWIN SHARING FEE (₹)",
       "labelProgramFee": "PROGRAM FEE (₹)",
+      "feeSingle": "Single: ₹{fee}",
+      "feeTwin": "Twin: ₹{fee}",
+      "feeNonRes": "Non-Res: ₹{fee}",
       "stayTypeHint": "Configure all stay options offered for this program.",
       "labelAttachBrochure": "Attach brochure",
       "browseButton": "Browse",
@@ -251,6 +254,7 @@
       "errorLoadDraft": "Failed to load draft program.",
       "errorSaveDraft": "Failed to save draft. Please try again.",
       "errorPublish": "Failed to publish program. Please try again.",
+      "errorPublishDefault": "Failed to publish",
       "errorDelete": "Failed to delete draft. Please try again.",
       "errorValidation": "Please fill in all required fields before publishing."
    }

@@ -20,6 +20,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showPublishModal, setShowPublishModal] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   // ── Form state ─────────────────────────────────────────────────────
   const [title, setTitle] = useState('');
@@ -65,13 +66,29 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
     nonResidentialFee: isNonResidential && nonResidentialFee ? Number(nonResidentialFee) : undefined,
   });
 
-  const handleSaveDraft = () => saveDraft(programId, buildPayload(), brochureFile || undefined);
+  const handleSaveDraft = async () => {
+    const saved = await saveDraft(programId, buildPayload(), brochureFile || undefined);
+    if (saved) {
+      router.push('/dashboard/programs/drafts');
+    }
+  };
 
   const handlePublishConfirm = async () => {
+    setPublishError(null);
     const saved = await saveDraft(programId, buildPayload(), brochureFile || undefined);
     if (!saved) return;
-    const published = await publishDraft(programId);
-    if (published) { setShowPublishModal(false); router.push('/dashboard/programs/drafts'); }
+    const result = await publishDraft(programId);
+    if (result.success) { 
+      setShowPublishModal(false); 
+      router.push('/dashboard/programs/drafts'); 
+    } else {
+      setPublishError(result.error || t('draftPrograms.errorPublishDefault'));
+    }
+  };
+
+  const handlePublishCancel = () => {
+    setShowPublishModal(false);
+    setPublishError(null);
   };
 
   const handleBrochureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,11 +117,20 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
       {/* Publish Modal */}
       <AppModal isOpen={showPublishModal} type="confirm"
         title={t('draftPrograms.publishModalTitle')}
-        description={t('draftPrograms.publishModalDescription')}
+        description={
+          <div className="flex flex-col gap-2">
+            <span>{t('draftPrograms.publishModalDescription')}</span>
+            {publishError && (
+              <span className="text-red-400 font-medium text-xs mt-1 p-2 bg-red-500/10 rounded border border-red-500/20">
+                {publishError}
+              </span>
+            )}
+          </div>
+        }
         cancelLabel={t('draftPrograms.publishModalDisagree')}
         confirmLabel={t('draftPrograms.publishModalConfirm')}
         loading={isPublishing || isSaving}
-        onCancel={() => setShowPublishModal(false)} onConfirm={handlePublishConfirm} />
+        onCancel={handlePublishCancel} onConfirm={handlePublishConfirm} />
 
       {/* Hidden file input */}
       <input type="file" ref={fileInputRef} onChange={handleBrochureChange} accept=".pdf" className="hidden" />
@@ -232,11 +258,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
       </div>
 
       {/* Footer Buttons */}
-      <div className="flex justify-between items-center pt-2">
-        <button onClick={handleBack}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white/70 bg-white/[0.06] border border-white/10 hover:bg-white/10 transition-colors" id="footer-back-button">
-          <ArrowLeft size={14} />{t('draftPrograms.backButton')}
-        </button>
+      <div className="flex justify-end items-center pt-2">
         <div className="flex items-center gap-3">
           <button onClick={handleSaveDraft} disabled={isSaving || isPublishing}
             className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="save-draft-button">

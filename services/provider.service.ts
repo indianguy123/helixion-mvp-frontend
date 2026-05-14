@@ -42,12 +42,7 @@ export const providerService = {
     formData.append('file', file);
     const response = await api.post<BulkUploadResponse>(
       '/training-provider/programs/bulk',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
     );
     return response.data;
   },
@@ -99,12 +94,7 @@ export const providerService = {
 
     const response = await api.put<{ data: DraftProgram }>(
       `/training-provider/programs/${id}`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
     );
     return response.data.data;
   },

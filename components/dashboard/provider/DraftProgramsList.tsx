@@ -21,6 +21,7 @@ export default function DraftProgramsList() {
   const { publishDraft, deleteDraft, isPublishing, isDeleting } = useDraftActions();
 
   const [publishTarget, setPublishTarget] = useState<DraftProgram | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<DraftProgram | null>(null);
 
   const perPage = 10;
@@ -31,8 +32,19 @@ export default function DraftProgramsList() {
 
   const handlePublishConfirm = async () => {
     if (!publishTarget) return;
-    const ok = await publishDraft(publishTarget._id);
-    if (ok) { setPublishTarget(null); refresh(); }
+    setPublishError(null);
+    const result = await publishDraft(publishTarget._id);
+    if (result.success) { 
+      setPublishTarget(null); 
+      refresh(); 
+    } else {
+      setPublishError(result.error || t('draftPrograms.errorPublishDefault'));
+    }
+  };
+
+  const handlePublishCancel = () => {
+    setPublishTarget(null);
+    setPublishError(null);
   };
 
   const handleDeleteConfirm = async () => {
@@ -44,8 +56,22 @@ export default function DraftProgramsList() {
   const fmtDate = (d?: string) => (d ? new Date(d).toISOString().split('T')[0] : '—');
 
   const fmtFee = (p: DraftProgram) => {
-    const fee = p.singleOccupancyFee || p.twinSharingFee || p.nonResidentialFee || 0;
-    return fee > 0 ? `₹${fee.toLocaleString('en-IN')}` : '—';
+    const parts = [];
+    if (p.singleOccupancyFee) parts.push(t('draftPrograms.feeSingle', { fee: p.singleOccupancyFee.toLocaleString('en-IN') }));
+    if (p.twinSharingFee) parts.push(t('draftPrograms.feeTwin', { fee: p.twinSharingFee.toLocaleString('en-IN') }));
+    if (p.nonResidentialFee) parts.push(t('draftPrograms.feeNonRes', { fee: p.nonResidentialFee.toLocaleString('en-IN') }));
+    
+    if (parts.length === 0) return <span className="text-sm font-medium text-white/80">—</span>;
+    
+    return (
+      <div className="flex flex-col gap-1">
+        {parts.map((part, i) => (
+          <span key={i} className="text-[11px] font-medium text-white/80 bg-white/5 px-2 py-0.5 rounded w-max">
+            {part}
+          </span>
+        ))}
+      </div>
+    );
   };
 
   const fmtUpdated = (d: string) =>
@@ -56,11 +82,20 @@ export default function DraftProgramsList() {
       {/* Publish Modal */}
       <AppModal isOpen={!!publishTarget} type="confirm"
         title={t('draftPrograms.publishModalTitle')}
-        description={t('draftPrograms.publishModalDescription')}
+        description={
+          <div className="flex flex-col gap-2">
+            <span>{t('draftPrograms.publishModalDescription')}</span>
+            {publishError && (
+              <span className="text-red-400 font-medium text-xs mt-1 p-2 bg-red-500/10 rounded border border-red-500/20">
+                {publishError}
+              </span>
+            )}
+          </div>
+        }
         cancelLabel={t('draftPrograms.publishModalDisagree')}
         confirmLabel={t('draftPrograms.publishModalConfirm')}
         loading={isPublishing}
-        onCancel={() => setPublishTarget(null)} onConfirm={handlePublishConfirm} />
+        onCancel={handlePublishCancel} onConfirm={handlePublishConfirm} />
 
       {/* Delete Modal */}
       <AppModal isOpen={!!deleteTarget} type="confirm"
@@ -128,7 +163,7 @@ export default function DraftProgramsList() {
                   <TableCell><span className="text-sm text-white/70">{fmtDate(p.startDate)}</span></TableCell>
                   <TableCell><span className="text-sm text-white/70">{fmtDate(p.endDate)}</span></TableCell>
                   <TableCell><span className="text-sm text-white/70">{p.venue || '—'}</span></TableCell>
-                  <TableCell><span className="text-sm font-medium text-white/80">{fmtFee(p)}</span></TableCell>
+                  <TableCell>{fmtFee(p)}</TableCell>
                   <TableCell><Badge status="draft">{t('draftPrograms.statusDraft')}</Badge></TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

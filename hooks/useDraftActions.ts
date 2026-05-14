@@ -56,15 +56,15 @@ export function useDraftActions(): UseDraftActionsReturn {
     }
   };
 
-  const publishDraft = async (id: string): Promise<boolean> => {
+  const publishDraft = async (id: string): Promise<{ success: boolean; error?: string }> => {
     setIsPublishing(true);
     try {
       await providerService.publishDraft(id);
       toast.success(t('draftPrograms.successPublished'));
-      return true;
-    } catch {
-      toast.error(t('draftPrograms.errorPublish'));
-      return false;
+      return { success: true };
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || t('draftPrograms.errorPublish');
+      return { success: false, error: errorMsg };
     } finally {
       setIsPublishing(false);
     }
