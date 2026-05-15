@@ -5,18 +5,13 @@ import FileDropzone from '@/components/shared/FileDropzone';
 import DataTable from '@/components/shared/data-table';
 import AppModal from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
-import { providerService, BulkUploadError } from '@/services/provider.service';
+import { providerService, BulkUploadError, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 
-const EXPECTED_COLUMNS = [
-  'title', 'startDate', 'endDate', 'venue', 'isResidential', 'stayType',
-  'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',
-  'brochureUrl', 'minParticipants', 'maxParticipants', 'status',
-];
-
-const SAMPLE_CSV_HEADER = EXPECTED_COLUMNS.join(',');
-const SAMPLE_CSV_ROW = 'Leadership Workshop,2026-06-01,2026-06-03,Mumbai,true,single,15000,12000,8000,,10,50,draft';
+import { EXPECTED_COLUMNS, SAMPLE_CSV_HEADER, SAMPLE_CSV_ROW } from '@/constants/bulkProgram';
+import { parseCsvPreview } from '@/utils/csv';
+import BulkProgramPreview from './BulkProgramPreview';
 
 export default function BulkProgramUpload() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,11 +19,7 @@ export default function BulkProgramUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [uploadResult, setUploadResult] = useState<{
-    insertedCount: number;
-    failedCount: number;
-    errors: BulkUploadError[];
-  } | null>(null);
+  const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelected = async (file: File) => {
@@ -43,22 +34,13 @@ export default function BulkProgramUpload() {
 
     try {
       const text = await file.text();
-      const lines = text.split('\n').filter(line => line.trim() !== '');
-      if (lines.length < 2) {
+      const parsedData = parseCsvPreview(text, 5);
+      
+      if (parsedData.length === 0) {
         toast.error(t('bulkProgram.errorEmptyFile'));
         setIsProcessing(false);
         return;
       }
-
-      const headers = lines[0].split(',').map(h => h.trim());
-      const parsedData = lines.slice(1, 6).map(line => {
-        const values = line.split(',');
-        const obj: any = {};
-        headers.forEach((header, index) => {
-          obj[header] = values[index]?.trim() || '';
-        });
-        return obj;
-      });
 
       setPreviewData(parsedData);
     } catch (err) {
@@ -101,12 +83,7 @@ export default function BulkProgramUpload() {
     URL.revokeObjectURL(url);
   };
 
-  const previewColumns = previewData.length > 0
-    ? Object.keys(previewData[0]).map(key => ({
-        header: key,
-        render: (row: any) => <span className="text-sm">{row[key]}</span>
-      }))
-    : [];
+
 
   const errorColumns = [
     { header: 'Row', render: (err: BulkUploadError) => <span className="text-sm font-medium">{err.row}</span> },
@@ -240,7 +217,7 @@ export default function BulkProgramUpload() {
               </div>
             </div>
 
-            <DataTable data={previewData} columns={previewColumns} />
+            <BulkProgramPreview previewData={previewData} />
           </div>
         )}
 

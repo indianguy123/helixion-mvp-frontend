@@ -10,9 +10,9 @@ import Badge from '@/components/ui/badge';
 import SearchInput from '@/components/ui/search-input';
 import AppModal from '@/components/ui/app-modal';
 import { Spinner } from '@/components/ui/spinner';
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '@/components/ui/table';
+import DataTable from '@/components/shared/data-table';
+import PaginationController from '@/components/ui/pagination';
+import { Button } from '@/components/ui/button';
 import type { DraftProgram } from '@/types';
 
 export default function DraftProgramsList() {
@@ -122,11 +122,10 @@ export default function DraftProgramsList() {
         </div>
         <div className="flex items-center gap-3">
           <SearchInput value={search} onChange={setSearch} placeholder={t('draftPrograms.searchPlaceholder')} />
-          <button
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors whitespace-nowrap"
+          <Button
             onClick={() => router.push('/dashboard/programs/create')} id="new-program-button">
             {t('draftPrograms.newProgramButton')}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -138,59 +137,74 @@ export default function DraftProgramsList() {
           <div className="text-center py-12 text-white/40 text-sm">{t('draftPrograms.noResults')}</div>
         </div>
       ) : (
-        <div className="bg-[#111827] border border-white/[0.06] rounded-xl overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('draftPrograms.columnProgramTitle')}</TableHead>
-                <TableHead>{t('draftPrograms.columnStartDate')}</TableHead>
-                <TableHead>{t('draftPrograms.columnEndDate')}</TableHead>
-                <TableHead>{t('draftPrograms.columnVenue')}</TableHead>
-                <TableHead>{t('draftPrograms.columnFee')}</TableHead>
-                <TableHead>{t('draftPrograms.columnStatus')}</TableHead>
-                <TableHead>{t('draftPrograms.columnActions')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {drafts.map((p) => (
-                <TableRow key={p._id}>
-                  <TableCell>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-medium text-slate-200">{p.title}</span>
-                      <span className="text-[11px] text-white/35">{t('draftPrograms.lastUpdated')} {fmtUpdated(p.updatedAt)}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell><span className="text-sm text-white/70">{fmtDate(p.startDate)}</span></TableCell>
-                  <TableCell><span className="text-sm text-white/70">{fmtDate(p.endDate)}</span></TableCell>
-                  <TableCell><span className="text-sm text-white/70">{p.venue || '—'}</span></TableCell>
-                  <TableCell>{fmtFee(p)}</TableCell>
-                  <TableCell><Badge status="draft">{t('draftPrograms.statusDraft')}</Badge></TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-colors"
-                        onClick={() => handleEdit(p._id)} id={`edit-draft-${p._id}`}>
-                        <Pencil size={14} />{t('draftPrograms.editButton')}
-                      </button>
-                      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-blue-500/15 hover:border-blue-500/30 hover:text-blue-300 transition-colors"
-                        onClick={() => setPublishTarget(p)} id={`publish-draft-${p._id}`}>
-                        <Send size={14} />{t('draftPrograms.publishButton')}
-                      </button>
-                      <button className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
-                        onClick={() => setDeleteTarget(p)} id={`delete-draft-${p._id}`}>
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <div className="flex flex-col gap-4">
+          <DataTable 
+            data={drafts} 
+            columns={[
+              {
+                header: t('draftPrograms.columnProgramTitle'),
+                render: (p: DraftProgram) => (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-sm font-medium text-slate-200">{p.title}</span>
+                    <span className="text-[11px] text-white/35">{t('draftPrograms.lastUpdated')} {fmtUpdated(p.updatedAt)}</span>
+                  </div>
+                )
+              },
+              {
+                header: t('draftPrograms.columnStartDate'),
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{fmtDate(p.startDate)}</span>
+              },
+              {
+                header: t('draftPrograms.columnEndDate'),
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{fmtDate(p.endDate)}</span>
+              },
+              {
+                header: t('draftPrograms.columnVenue'),
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{p.venue || '—'}</span>
+              },
+              {
+                header: t('draftPrograms.columnFee'),
+                render: (p: DraftProgram) => fmtFee(p)
+              },
+              {
+                header: t('draftPrograms.columnStatus'),
+                render: (p: DraftProgram) => <Badge status="draft">{t('draftPrograms.statusDraft')}</Badge>
+              },
+              {
+                header: t('draftPrograms.columnActions'),
+                render: (p: DraftProgram) => (
+                  <div className="flex items-center gap-2">
+                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-colors"
+                      onClick={() => handleEdit(p._id)} id={`edit-draft-${p._id}`}>
+                      <Pencil size={14} />{t('draftPrograms.editButton')}
+                    </button>
+                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-blue-500/15 hover:border-blue-500/30 hover:text-blue-300 transition-colors"
+                      onClick={() => setPublishTarget(p)} id={`publish-draft-${p._id}`}>
+                      <Send size={14} />{t('draftPrograms.publishButton')}
+                    </button>
+                    <button className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
+                      onClick={() => setDeleteTarget(p)} id={`delete-draft-${p._id}`}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )
+              }
+            ]}
+          />
 
           {/* Pagination Footer */}
-          <div className="flex justify-end items-center gap-6 px-4 py-3 border-t border-white/[0.06] text-xs text-white/40">
-            <span>{t('draftPrograms.rowsPerPage', { perPage })}</span>
-            <span>{t('draftPrograms.paginationInfo', { start, end, total })}</span>
-          </div>
+          {total > 0 && (
+            <div className="flex flex-col items-center justify-center mt-2 mb-4">
+              <PaginationController 
+                page={page} 
+                totalPages={Math.ceil(total / perPage)} 
+                onPageChange={setPage} 
+              />
+              <div className="text-xs text-white/40 mt-3">
+                {t('draftPrograms.paginationInfo', { start, end, total })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

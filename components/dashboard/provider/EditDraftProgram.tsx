@@ -8,6 +8,8 @@ import { t } from '@/lib/i18n';
 import Badge from '@/components/ui/badge';
 import AppModal from '@/components/ui/app-modal';
 import { Spinner } from '@/components/ui/spinner';
+import { Button } from '@/components/ui/button';
+import InputField from '@/components/ui/input';
 import type { UpdateDraftPayload } from '@/services/provider.service';
 
 interface EditDraftProgramProps {
@@ -103,8 +105,6 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
 
   const shortId = (id: string) => `DR-${id.slice(-4).toUpperCase()}`;
 
-  // ── Input class (reused) ───────────────────────────────────────────
-  const inputCls = 'w-full px-3 py-2.5 bg-white/[0.04] border border-white/10 rounded-lg text-slate-200 text-sm outline-none transition-colors focus:border-blue-500/50 placeholder:text-white/25';
 
   if (isLoadingDraft) {
     return <div className="flex justify-center items-center py-16"><Spinner size="lg" /></div>;
@@ -136,10 +136,10 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
       <input type="file" ref={fileInputRef} onChange={handleBrochureChange} accept=".pdf" className="hidden" />
 
       {/* Back Link */}
-      <button onClick={handleBack} className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors mb-4 self-start" id="back-to-drafts">
-        <ArrowLeft size={16} />
+      <Button variant="ghost" onClick={handleBack} className="mb-4 self-start" id="back-to-drafts">
+        <ArrowLeft size={16} className="mr-1.5" />
         {t('draftPrograms.backToDrafts')}
-      </button>
+      </Button>
 
       {/* Header */}
       <div className="flex justify-between items-start mb-6">
@@ -162,7 +162,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
           <label className="text-sm font-medium text-white/70 pt-2">
             {t('draftPrograms.labelProgramTitle')}<span className="text-red-400 ml-1">*</span>
           </label>
-          <input type="text" className={inputCls} value={title} onChange={(e) => setTitle(e.target.value)} id="edit-program-title" />
+          <InputField value={title} onChange={(e) => setTitle(e.target.value)} id="edit-program-title" />
         </div>
 
         {/* Program Dates */}
@@ -172,12 +172,12 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <input type="date" className={inputCls} value={startDate} onChange={(e) => setStartDate(e.target.value)} id="edit-start-date" />
-              <span className="text-[11px] text-white/35">{t('draftPrograms.labelStartDate')}</span>
+              <span className="text-[11px] text-white/35 font-medium">{t('draftPrograms.labelStartDate')}</span>
+              <InputField type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} id="edit-start-date" />
             </div>
             <div className="flex flex-col gap-1.5">
-              <input type="date" className={inputCls} value={endDate} onChange={(e) => setEndDate(e.target.value)} id="edit-end-date" />
-              <span className="text-[11px] text-white/35">{t('draftPrograms.labelEndDate')}</span>
+              <span className="text-[11px] text-white/35 font-medium">{t('draftPrograms.labelEndDate')}</span>
+              <InputField type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} id="edit-end-date" />
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
           <label className="text-sm font-medium text-white/70 pt-2">
             {t('draftPrograms.labelVenue')}<span className="text-red-400 ml-1">*</span>
           </label>
-          <input type="text" className={inputCls} value={venue} onChange={(e) => setVenue(e.target.value)} id="edit-venue" />
+          <InputField value={venue} onChange={(e) => setVenue(e.target.value)} id="edit-venue" />
         </div>
 
         {/* Stay Type & Fees */}
@@ -207,11 +207,11 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[10px] font-semibold tracking-wider uppercase text-white/40">{t('draftPrograms.labelSingleOccupancyFee')}</span>
-                    <input type="number" className={inputCls} value={singleOccupancyFee} onChange={(e) => setSingleOccupancyFee(e.target.value)} id="single-occupancy-fee" />
+                    <InputField type="number" value={singleOccupancyFee} onChange={(e) => setSingleOccupancyFee(e.target.value)} id="single-occupancy-fee" />
                   </div>
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[10px] font-semibold tracking-wider uppercase text-white/40">{t('draftPrograms.labelTwinSharingFee')}</span>
-                    <input type="number" className={inputCls} value={twinSharingFee} onChange={(e) => setTwinSharingFee(e.target.value)} id="twin-sharing-fee" />
+                    <InputField type="number" value={twinSharingFee} onChange={(e) => setTwinSharingFee(e.target.value)} id="twin-sharing-fee" />
                   </div>
                 </div>
               )}
@@ -230,7 +230,7 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <span className="text-[10px] font-semibold tracking-wider uppercase text-white/40">{t('draftPrograms.labelProgramFee')}</span>
-                    <input type="number" className={inputCls} value={nonResidentialFee} onChange={(e) => setNonResidentialFee(e.target.value)} id="non-residential-fee" />
+                    <InputField type="number" value={nonResidentialFee} onChange={(e) => setNonResidentialFee(e.target.value)} id="non-residential-fee" />
                   </div>
                 </div>
               )}
@@ -246,10 +246,9 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
           </label>
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <button type="button" onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-white/[0.08] border border-white/[0.12] hover:bg-white/[0.14] transition-colors" id="browse-brochure">
-                <Paperclip size={14} />{t('draftPrograms.browseButton')}
-              </button>
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()} id="browse-brochure">
+                <Paperclip size={14} className="mr-1.5" />{t('draftPrograms.browseButton')}
+              </Button>
               {brochureFilename && <span className="text-sm text-white/60">{brochureFilename}</span>}
             </div>
             <p className="text-[11px] text-white/30 mt-1">{t('draftPrograms.brochureHint')}</p>
@@ -260,14 +259,12 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
       {/* Footer Buttons */}
       <div className="flex justify-end items-center pt-2">
         <div className="flex items-center gap-3">
-          <button onClick={handleSaveDraft} disabled={isSaving || isPublishing}
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="save-draft-button">
-            <Save size={14} />{isSaving ? t('draftPrograms.saving') : t('draftPrograms.saveDraftButton')}
-          </button>
-          <button onClick={() => setShowPublishModal(true)} disabled={isSaving || isPublishing}
-            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="publish-program-button">
-            <Send size={14} />{t('draftPrograms.publishProgramButton')}
-          </button>
+          <Button variant="outline" onClick={handleSaveDraft} disabled={isSaving || isPublishing} id="save-draft-button">
+            <Save size={14} className="mr-1.5" />{isSaving ? t('draftPrograms.saving') : t('draftPrograms.saveDraftButton')}
+          </Button>
+          <Button variant="default" onClick={() => setShowPublishModal(true)} disabled={isSaving || isPublishing} id="publish-program-button">
+            <Send size={14} className="mr-1.5" />{t('draftPrograms.publishProgramButton')}
+          </Button>
         </div>
       </div>
     </div>
