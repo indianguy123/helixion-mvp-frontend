@@ -14,7 +14,7 @@ interface UseDraftActionsReturn {
   draft: DraftProgram | null;
   fetchDraft: (id: string) => Promise<void>;
   saveDraft: (id: string, data: UpdateDraftPayload, brochureFile?: File) => Promise<boolean>;
-  publishDraft: (id: string) => Promise<boolean>;
+  publishDraft: (id: string) => Promise<{ success: boolean; error?: string }>;
   deleteDraft: (id: string) => Promise<boolean>;
 }
 
