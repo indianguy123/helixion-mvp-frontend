@@ -1,6 +1,7 @@
 import { NavItem, User } from "@/types";
 import { NavSection } from "@/types/employee";
 
+
 /**
  * Props for the main Sidebar component
  */

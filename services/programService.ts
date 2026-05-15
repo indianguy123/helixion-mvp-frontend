@@ -74,7 +74,7 @@ export const createProgramAPI = async (
   });
 
   const response = await api.post(
-    API.TRAINGPROVIDER.CREATEPROGRAM,
+    API.TRAININGPROVIDER.CREATEPROGRAM,
     formData
   );
 

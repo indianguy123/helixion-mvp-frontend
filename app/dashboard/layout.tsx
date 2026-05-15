@@ -1,39 +1,21 @@
-import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
-import { DashboardShell } from "@/components/DashboardShell";
-import type { User } from "@/types";
-import { decodeJwtPayload, getAccessToken } from "@/utils/token";
-import { EMP_NAV_SECTIONS } from "@/constants/employee";
-import { TRAINING_PROVIDER_NAV_SECTIONS } from "@/constants/training-provider";
-import { DEFAULT_KEY, USER_ROLES } from "@/constants/navigation";
-import { NavSection } from "@/types/employee";
-
+import type { ReactNode } from 'react';
+import { DashboardShell } from '@/components/DashboardShell';
+import type { User } from '@/types';
+import { decodeJwtPayload, getAccessToken } from '@/utils/token';
+import { redirect } from 'next/navigation';
+import { EMP_NAV_SECTIONS } from '@/constants/employee';
+import { PROVIDER_NAV_SECTIONS } from '@/constants/provider';
+import { USER_ROLES } from '@/constants/navigation';
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default async function DashboardLayout({
-  children,
-}: DashboardLayoutProps) {
+export default async function DashboardLayout({ children }: DashboardLayoutProps) {
   const token = await getAccessToken();
-
-  if (!token) {
-    redirect("/signin");
-  }
+  if (!token) redirect('/signin');
 
   const payload = await decodeJwtPayload(token);
-
-  let navSections:NavSection[] =  [];
-  let defaultActiveKey = DEFAULT_KEY.DASHBOARD;
-
-  if (payload.role === USER_ROLES.EMPLOYEE) {
-    navSections = EMP_NAV_SECTIONS;
-    defaultActiveKey = DEFAULT_KEY.ENROLLMENTS;
-  } else if (payload.role === USER_ROLES.TRAINING_PROVIDER) {
-    navSections = TRAINING_PROVIDER_NAV_SECTIONS;
-    defaultActiveKey = DEFAULT_KEY.DASHBOARD;
-  }
 
   const user: User = {
     userId: payload.userId,
@@ -43,8 +25,13 @@ export default async function DashboardLayout({
     role: payload.role,
   };
 
+  // Choose navigation based on user role
+  const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
+  const navSections = isProvider ? PROVIDER_NAV_SECTIONS : EMP_NAV_SECTIONS;
+  const defaultActiveKey = isProvider ? 'dashboard' : 'enrollments';
+
   return (
-    <DashboardShell
+   <DashboardShell
       user={user}
       navSections={navSections}
       defaultActiveKey={defaultActiveKey}

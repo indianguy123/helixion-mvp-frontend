@@ -49,10 +49,10 @@ function EmployeeDashboardView() {
 
 //function Training-provider Dashboard 
 
-function TainingProviderDashboardView(){
+function TrainingProviderDashboardView() {
   return (
     <>
-    <p>Dashboard</p>
+      <p>Dashboard</p>
     </>
   )
 }
@@ -68,13 +68,14 @@ interface RoleDashboardViewProps {
 }
 
 export function RoleDashboardView({ role }: RoleDashboardViewProps) {
-  switch (role) {
-    case USER_ROLES.TRAINING_PROVIDER:
-        return <TainingProviderDashboardView />
-      
-    case USER_ROLES.EMPLOYEE:
-      return <EmployeeDashboardView />;
-    default:
-      return null;
+  if (role === USER_ROLES.EMPLOYEE) {
+    return <EmployeeDashboardView />;
   }
+
+  if (role === USER_ROLES.TRAINING_PROVIDER) {
+    return <TrainingProviderDashboardView />;
+  }
+
+  return null
+
 }

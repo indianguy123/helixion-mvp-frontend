@@ -15,7 +15,7 @@ export const API = {
    EMPLOYEE: {
       DASHBOARD: '/employee/dashboard'
    },
-   TRAINGPROVIDER:{
+   TRAININGPROVIDER:{
       CREATEPROGRAM:'/training-provider/create/program'
    }
 }

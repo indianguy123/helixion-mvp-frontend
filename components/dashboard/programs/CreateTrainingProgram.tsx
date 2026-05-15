@@ -4,165 +4,18 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Upload, ArrowLeftRight } from "lucide-react";
+import { Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
-import InputField, { Label } from "../ui/input";
-import Badge from "../ui/badge";
+import InputField, { Label } from "../../ui/input";
 import { t } from "@/lib/i18n";
-import { PROGRAM_SAVED_STATUS, StayOption } from "@/types";
+import { PROGRAM_SAVED_STATUS } from "@/types";
 import { useCreateProgram } from "@/hooks/useCreateProgram";
-import AppModal from "../ui/app-modal";
+import AppModal from "../../ui/app-modal";
 import { createProgramFormData, INITIAL_FORM_STATE } from "@/constants/training-provider";
 import { STAY_TYPES } from "@/constants/content";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-
-
-
-
-
-
-
-
-interface StayOptionRowProps {
-  option: StayOption;
-  parentEnabled: boolean;
-  onPriceChange: (id: string, price: string) => void;
-}
-
-//select price option shown like (residential - single and twin sharing , non-residential)
-
-function StayOptionRow({ option, parentEnabled, onPriceChange }: StayOptionRowProps) {
-  return (
-    <div className="grid grid-cols-[160px_1fr] items-center gap-x-4 pl-6">
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id={option.id}
-          checked={!!option.price}
-          disabled
-          className="border-borderDark data-[state=checked]:bg-primary data-[state=checked]:border-primary w-3.5 h-3.5"
-        />
-        <label htmlFor={option.id} className="text-sm text-textSecondary cursor-pointer select-none">
-          {option.label}
-        </label>
-      </div>
-      <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-textSidebarMuted text-sm">₹</span>
-        <InputField
-          type="text"
-          value={option.price}
-          onChange={(e) => onPriceChange(option.id, e.target.value)}
-          disabled={!parentEnabled}
-          className="bg-inputBg border-borderDark text-textSecondary pl-7 h-9 text-sm disabled:opacity-40"
-        />
-      </div>
-    </div>
-  );
-}
-
-// ─── Live Preview ─────────────────────────────────────────────────────────────
-
-interface LivePreviewProps {
-  data: createProgramFormData;
-}
-
-function LivePreview({ data }: LivePreviewProps) {
-  const enabledStays = data.stayTypes.filter((s) => s.enabled);
-
-  return (
-    <div className="bg-bgCard border border-borderCard rounded-lg p-5 h-full flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs text-textSidebarMuted uppercase tracking-wider mb-0.5">{t('programme.livePreview')}</p>
-          <p className="text-xs text-textMuted">{t('programme.howToSee')}</p>
-        </div>
-        <Button
-          size="sm"
-          variant="outline"
-          className="text-xs h-7 px-3 border-borderDark text-textSecondary hover:bg-bgButton"
-        >
-          {t('button.preview')}
-        </Button>
-      </div>
-
-      <Separator className="bg-borderDark" />
-
-      {/* Preview Card */}
-      <div className="flex-1 space-y-4">
-        <div>
-          <h3 className="text-lg font-semibold text-foreground leading-tight">
-            {data.programTitle || t('programme.defaultTitle')}
-          </h3>
-          <p className="text-sm text-textSidebarMuted mt-0.5">
-            {data.venue ? `Venue — ${ data.venue }` : t('programme.defaultVenue')}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.start')}</p>
-            <p className="text-sm text-textSecondary">{data.startDate || "—"}</p>
-          </div>
-          <div>
-            <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.end')}</p>
-            <p className="text-sm text-textSecondary">{data.endDate || "—"}</p>
-          </div>
-        </div>
-
-        <div>
-          <p className="text-xs text-textSidebarMuted mb-1">{t('programme.fields.capacity')}</p>
-          <p className="text-sm text-textSecondary">
-            {data.minParticipants || data.maxParticipants
-              ? `${ data.minParticipants || "?" } / ${ data.maxParticipants || "?" }`
-              : "— / —"}
-          </p>
-        </div>
-
-        {enabledStays.length > 0 && (
-          <div>
-            <p className="text-xs text-textSidebarMuted mb-2">{t('programme.fields.fees')}</p>
-            <div className="space-y-2">
-              {enabledStays.map((stay) =>
-                stay.options.map((opt) => (
-                  <div key={opt.id} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-textSidebarMuted">{stay.label}</p>
-                      <p className="text-sm text-textSecondary">{opt.label}</p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {opt.price && (
-                        <span className="text-sm text-textSecondary">₹{opt.price}</span>
-                      )}
-                      <ArrowLeftRight className="w-3.5 h-3.5 text-textSidebarMuted" />
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        )}
-
-        {enabledStays.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {enabledStays.map((stay) => (
-              <Badge
-                key={stay.id}
-                variant="secondary"
-                className="bg-bgStatCard text-textSecondary border border-borderDark text-xs"
-              >
-                {stay.label}
-              </Badge>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
+import LivePreview from "./Live-preview";
+import StayOptionRow from "./Stay-option-row";
+import PageHeader from "@/components/ui/pageHeader";
 
 
 
@@ -292,13 +145,10 @@ export default function CreateTrainingProgram() {
   return (
     <div className="min-h-screen bg-bgMain px-6 py-8">
       {/* Page Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-foreground">{t('programme.createpageTitle')}</h1>
-        <p className="text-sm text-textSidebarMuted mt-0.5">
-          {t('programme.createpageDescription')}
-        </p>
-      </div>
-
+      <PageHeader
+        title={t("programme.createpageTitle")}
+        description={t("programme.createpageDescription")}
+      />
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-5">
         {/* ── Left: Form ─────────────────────────────────────────────────────── */}
