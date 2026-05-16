@@ -2,7 +2,32 @@
    "programme": {
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
-      "enrol": "Enrol"
+      "enrol": "Enrol",
+      "livePreview": "Live preview",
+      "howToSee": "How participants will see this program",
+      "defaultTitle": "Program title appears here",
+      "defaultVenue": "Venue — not set",
+      "fields": {
+         "start": "Starts",
+         "end": "Ends",
+         "capacity": "Capacity",
+         "fees": "Fees",
+         "programTitle": "Program title",
+         "programTitlePlaceholder": "e.g. Accounting and Auditing Principles",
+         "programDates": "Program dates",
+         "venue": "Venue",
+         "venuePlaceholder": "e.g. Hotel Ritz, Kolkata",
+         "stayType": "Stay type",
+         "programFee": "Program fee",
+         "attachBrochure": "Attach brochure",
+         "minimumParticipants": "Minimum participants",
+         "maximumParticipants": "Maximum participants"
+      },
+      "createpageTitle": "Create new training program",
+      "createpageDescription": "Publish a single program to the Helixon marketplace.",
+      "createdetailsTitle": "Program details",
+      "createdetailsDescription": "All fields are required unless marked optional.",
+      "publishProgram": "Publish program"
    },
    "enrollment": {
       "title": "My Enrollments",
@@ -55,7 +80,11 @@
    "button": {
       "cancel": "cancel",
       "done": "Done",
-      "send": "Send"
+      "send": "Send",
+      "confirm": "Confirm & Approve",
+      "preview": "preview",
+      "browse": "Browse",
+      "saveDraft": "Save draft"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -69,14 +98,23 @@
       "username": "Username",
       "email": "Email",
       "action": "Action",
-      "no-data":"No matching records found."
+      "no-data": "No matching records found."
    },
    "admin": {
-    "deactivate": {
-      "title": "Deactivate a user account",
-      "description": "Search for a user. Deactivated accounts lose access immediately — data and history are retained and the account can be reactivated from All users."
-    }
-  },
+      "deactivate": {
+         "title": "Deactivate a user account",
+         "description": "Search for a user. Deactivated accounts lose access immediately — data and history are retained and the account can be reactivated from All users."
+      },
+      "approveUser": {
+         "title": "Approve User",
+         "selectRole": "Select role",
+         "assignRole": "Assign Role",
+         "roleHelp": "Select the appropriate role for this user.",
+         "successTitle": "User Approved Successfully",
+         "successDescription": "The user has been assigned a role and approved successfully.",
+         "roleAssigned": "Role assigned"
+      }
+   },
    "bulkImport": {
       "breadcrumb": {
          "users": "Users",
@@ -261,5 +299,6 @@
       "pageDescription": "View and manage your unpublished draft training programs.",
       "editPageTitleFull": "Edit Draft Program | Helixion Training Provider",
       "editPageDescription": "Edit and update your draft training program details."
+      "errorParseFailed": "Failed to parse CSV preview."
    }
 }

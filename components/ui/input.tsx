@@ -18,7 +18,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-function Label({
+export function Label({
   className,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {

@@ -4,7 +4,7 @@ import { KeyRound, Mail, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthLayout from '../../components/AuthLayout';
-import { loginAPI } from '@/utils/authService';
+import { loginAPI } from '@/services/authService';
 import { parseApiError } from '@/utils/parseError';
 import { SIGNIN_CONTENT } from '@/constants/content';
 import { ROUTES, USER_ROLES } from '@/constants/navigation';

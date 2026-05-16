@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { forgotPasswordAPI } from "@/utils/authService";
+import { forgotPasswordAPI } from "@/services/authService";
 
 export function useForgotPassword() {
    const [loading, setLoading] = useState(false);

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import AuthLayout from '../../components/AuthLayout';
 import { SIGNUP_CONTENT } from '@/constants/content';
 import { ROUTES } from '@/constants/navigation';
-import { registerAPI } from '@/utils/authService';
+import { registerAPI } from '@/services/authService';
 import { Button } from '@/components/ui/button';
 import InputField from '@/components/ui/input';
 import { useState } from 'react';

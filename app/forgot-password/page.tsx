@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
           className="flex items-center gap-2 text-xs text-textMuted hover:text-white mb-6"
         >
           <ArrowLeft size={14} />
-          {t('auth.forgotPassword.back')}
+          {t('auth.resetPassword.back')}
         </Link>
 
         {/* ICON */}

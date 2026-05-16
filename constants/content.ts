@@ -1,5 +1,7 @@
 // Content constants for UI text and static data
 
+import { StayType } from "@/types";
+
 // Sign In page content
 export const SIGNIN_CONTENT = {
   STATS: [
@@ -112,3 +114,24 @@ export const NAV_LABELS = {
   INTEGRATIONS: 'Integrations',
   NOTIFICATIONS: 'Notifications',
 } as const;
+
+
+//in program creation using stay type data
+
+export const STAY_TYPES: StayType[] = [
+  {
+    id: "residential",
+    label: "Residential",
+    enabled: false,
+    options: [
+      { id: "single", label: "Single Occupancy", price: "" },
+      { id: "twin", label: "Twin Sharing", price: "" },
+    ],
+  },
+  {
+    id: "non-residential",
+    label: "Non-Residential",
+    enabled: false,
+    options: [{ id: "non-res-default", label: "Day Scholar", price: "" }],
+  },
+];

@@ -12,13 +12,13 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
  * Main admin dashboard page with production-level architecture
  */
 export default function AdminDashboard() {
-  const { registrations, loading, error, retry } = useRegistrations();
+  const { registrations, loading, error, refetch } = useRegistrations();
 
   const recentActivities: Activity[] = [];
   const { STATS } = ADMIN_CONTENT.DASHBOARD;
 
   return (
-    <div className={`flex h-screen ${COLOR_CLASSES.BG_MAIN}`}>
+    <div className={`flex h-screen ${ COLOR_CLASSES.BG_MAIN }`}>
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto">
           <div className="p-8">
@@ -54,23 +54,17 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-3 gap-6">
               <div className="col-span-2">
                 {loading ? (
-                  <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6 flex items-center justify-center h-[400px]`}>
+                  <div className={`${ COLOR_CLASSES.BG_CARD } rounded-lg border ${ COLOR_CLASSES.BORDER } p-6 flex items-center justify-center h-[400px]`}>
                     <div className={COLOR_CLASSES.TEXT_MUTED}>{UI_MESSAGES.LOADING_REGISTRATIONS}</div>
                   </div>
                 ) : error ? (
-                  <div className={`${COLOR_CLASSES.BG_CARD} rounded-lg border ${COLOR_CLASSES.BORDER} p-6 flex items-center justify-center h-[400px]`}>
+                  <div className={`${ COLOR_CLASSES.BG_CARD } rounded-lg border ${ COLOR_CLASSES.BORDER } p-6 flex items-center justify-center h-[400px]`}>
                     <div className="text-center">
                       <p className="text-textSidebarMuted mb-2">{error}</p>
-                      <button
-                        onClick={retry}
-                        className="text-primary hover:text-primaryDark text-sm font-medium"
-                      >
-                        Try again
-                      </button>
                     </div>
                   </div>
                 ) : (
-                  <PendingRegistrations registrations={registrations} />
+                  <PendingRegistrations registrations={registrations} refetch={refetch} />
                 )}
               </div>
               <div>
