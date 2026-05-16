@@ -298,7 +298,7 @@
       "pageTitleFull": "Draft Programs | Helixion Training Provider",
       "pageDescription": "View and manage your unpublished draft training programs.",
       "editPageTitleFull": "Edit Draft Program | Helixion Training Provider",
-      "editPageDescription": "Edit and update your draft training program details."
+      "editPageDescription": "Edit and update your draft training program details.",
       "errorParseFailed": "Failed to parse CSV preview."
    }
 }
