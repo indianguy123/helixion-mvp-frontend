@@ -1,13 +1,10 @@
-import { LucideIcon } from "lucide-react";
-
-
 // ─── User ────────────────────────────────────────────────────────────────────
 export interface User {
   userId: string;
   name: string;
   email: string;
   location: string;
-  role: string; 
+  role: string;
 }
 
 // ─── Enrollment ──────────────────────────────────────────────────────────────
@@ -28,7 +25,7 @@ export interface Programme {
   duration: string;
   mode: string;
   location: string;
-  status: string; 
+  status: string;
   fee: number;
 }
 
@@ -38,4 +35,27 @@ export interface NavItem {
   key: string;
   href?: string;
   icon: string;
+}
+
+// stay Options in stay type of program creation
+export interface StayOption {
+  id: string;
+  label: string;
+  price: string;
+}
+
+
+//_____Stay Type in program creation_______________________________________
+export interface StayType {
+  id: string;
+  label: string;
+  enabled: boolean;
+  options: StayOption[];
+}
+
+//program saved status
+
+export enum PROGRAM_SAVED_STATUS {
+  DRAFT = "draft",
+  PUBLISHED = "published",
 }

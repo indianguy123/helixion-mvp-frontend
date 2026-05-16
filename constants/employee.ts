@@ -1,6 +1,5 @@
 import {  User } from "@/types";
 import { NavSection } from "../types/employee";
-import { Award, BookOpen, Search, UserCircle } from "lucide-react";
 
 // role value correspond display in UI
 export const ROLE_LABEL: Record<string, string> = {

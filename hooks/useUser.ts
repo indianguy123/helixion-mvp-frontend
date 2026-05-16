@@ -1,6 +1,6 @@
 'use client';
 
-import { getUsersAPI } from "@/utils/adminService";
+import { getUsersAPI } from "@/services/adminService";
 import { useEffect, useState } from "react";
 
 export function useUsers(page: number, limit: number, search: string) {
