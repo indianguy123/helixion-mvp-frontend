@@ -1,12 +1,13 @@
 import { NavItem, User } from "@/types";
-import { EmpNavSection } from "../types/employee";
+import { NavSection } from "@/types/employee";
+
 
 /**
  * Props for the main Sidebar component
  */
 export interface SidebarProps {
   user: User;  // User details to display in the sidebar (name, avatar, etc.)
-  navSections: EmpNavSection[];  // Navigation sections containing categories and their menu items
+  navSections: NavSection[];  // Navigation sections containing categories and their menu items
   activeKey: string;  // Currently selected menu item key
   onNavChange: (key: string) => void;  // Callback triggered when a menu item is selected
   onSignOut: () => void;  // Optional logout handler
@@ -23,7 +24,7 @@ export interface SidebarProfileProps {
  * Props for the Sidebar menu component
  */
 export interface SidebarMenuProps {
-  sections: EmpNavSection[];  // List of navigation sections with categories and items
+  sections: NavSection[];  // List of navigation sections with categories and items
   activeKey: string;  // Currently active/selected menu item key
   onNavChange: (key: string) => void;  // Function to handle menu item selection
 }

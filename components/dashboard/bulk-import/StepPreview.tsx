@@ -124,7 +124,7 @@ export default function StepPreview({ users, fileName, onNext, onBack }: StepPre
                   </td>
                   <td className="px-6 py-3">
                     <span className={`text-xs font-mono ${user.errors?.password ? 'text-accentRed' : 'text-white/40'}`}>
-                      {'•'.repeat(Math.min(user.password.length, 12))}
+                      {'•'.repeat(Math.min(user.password?.length || 0, 12))}
                     </span>
                   </td>
                   <td className="px-6 py-3">

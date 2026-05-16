@@ -6,6 +6,7 @@ import { userService } from '@/services/userService';
 import { t } from '@/lib/i18n';
 import StepUpload from './StepUpload';
 import StepReview from './StepReview';
+import PageHeader from '@/components/ui/pageHeader';
 
 export default function BulkImportWizard() {
   const [parsedUsers, setParsedUsers] = useState<BulkUser[]>([]);
@@ -98,13 +99,10 @@ export default function BulkImportWizard() {
         <span className="text-primary font-medium">{t('bulkImport.breadcrumb.bulkImport')}</span>
       </div>
 
-      {/* Page Header */}
-      <div>
-        <h1 className="text-lg font-semibold text-white">{t('bulkImport.header.title')}</h1>
-        <p className="text-sm text-textSidebarMuted mt-1">
-          {t('bulkImport.header.description')}
-        </p>
-      </div>
+      <PageHeader
+        title={t("bulkImport.header.title")}
+        description={t("bulkImport.header.description")}
+      />
 
       {/* Supported Formats */}
       <div>
@@ -113,9 +111,8 @@ export default function BulkImportWizard() {
           {/* CSV Card */}
           <div
             onClick={() => setSelectedFormat('csv')}
-            className={`flex items-center gap-3 p-4 rounded-xl bg-bgStatCard cursor-pointer transition-all ${
-              selectedFormat === 'csv' ? 'border-2 border-primary' : 'border border-borderCard opacity-80 hover:opacity-100'
-            }`}
+            className={`flex items-center gap-3 p-4 rounded-xl bg-bgStatCard cursor-pointer transition-all ${ selectedFormat === 'csv' ? 'border-2 border-primary' : 'border border-borderCard opacity-80 hover:opacity-100'
+              }`}
           >
             <div className="w-10 h-10 rounded-lg bg-[#16a34a]/20 flex items-center justify-center flex-shrink-0">
               <span className="text-[10px] font-bold text-[#16a34a] tracking-wider">CSV</span>
@@ -132,9 +129,8 @@ export default function BulkImportWizard() {
           {/* XLSX Card */}
           <div
             onClick={() => setSelectedFormat('xlsx')}
-            className={`flex items-center gap-3 p-4 rounded-xl bg-bgStatCard cursor-pointer transition-all ${
-              selectedFormat === 'xlsx' ? 'border-2 border-primary' : 'border border-borderCard opacity-60 hover:opacity-80'
-            }`}
+            className={`flex items-center gap-3 p-4 rounded-xl bg-bgStatCard cursor-pointer transition-all ${ selectedFormat === 'xlsx' ? 'border-2 border-primary' : 'border border-borderCard opacity-60 hover:opacity-80'
+              }`}
           >
             <div className="w-10 h-10 rounded-lg bg-[#16a34a]/20 flex items-center justify-center flex-shrink-0">
               <span className="text-[10px] font-bold text-[#16a34a] tracking-wider">XLS</span>
@@ -160,59 +156,59 @@ export default function BulkImportWizard() {
       ) : (
         <>
           {/* Step 1 — Download template */}
-      <div>
-        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.template.stepLabel')}</p>
-        <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
           <div>
-            <p className="text-sm font-medium text-white">{t('bulkImport.template.fileName')}</p>
-            <p className="text-xs text-textSidebarMuted mt-1">
-              {t('bulkImport.template.description')}
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              const template = `email,role,action\narjun@email.com,employee,approve\nsara@trainpro.io,provider,approve\nvikram@corp.in,manager,update`;
-              const blob = new Blob([template], { type: 'text/csv' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = 'roles_import_template.csv';
-              a.click();
-              URL.revokeObjectURL(url);
-            }}
-            className="px-5 py-2 text-sm font-medium text-white bg-white/5 border border-white/10
+            <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.template.stepLabel')}</p>
+            <div className="flex items-center justify-between p-4 rounded-xl bg-bgStatCard border border-borderCard">
+              <div>
+                <p className="text-sm font-medium text-white">{t('bulkImport.template.fileName')}</p>
+                <p className="text-xs text-textSidebarMuted mt-1">
+                  {t('bulkImport.template.description')}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  const template = `email,role,action\narjun@email.com,employee,approve\nsara@trainpro.io,provider,approve\nvikram@corp.in,manager,update`;
+                  const blob = new Blob([template], { type: 'text/csv' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = 'roles_import_template.csv';
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="px-5 py-2 text-sm font-medium text-white bg-white/5 border border-white/10
                        rounded-lg hover:bg-white/10 transition-all duration-200"
-            id="download-template-btn"
-          >
-            {t('bulkImport.template.downloadButton')}
-          </button>
-        </div>
-      </div>
+                id="download-template-btn"
+              >
+                {t('bulkImport.template.downloadButton')}
+              </button>
+            </div>
+          </div>
 
-      {/* Step 2 — Upload file */}
-      <div>
-        <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.upload.stepLabel')}</p>
+          {/* Step 2 — Upload file */}
+          <div>
+            <p className="text-xs text-textSidebarMuted mb-3">{t('bulkImport.upload.stepLabel')}</p>
 
-        {!hasFile ? (
-          <StepUpload onFileParsed={handleFileParsed} />
-        ) : (
-          <StepReview
-            users={parsedUsers}
-            fileName={fileName}
-            fileSize={fileSize}
-            fileRows={fileRows}
-            validCount={validRows.length}
-            errorCount={errorRows.length}
-            warningCount={warningRows.length}
-            skippedCount={skippedRows}
-            isCommitting={isCommitting}
-            onRemove={handleRemoveFile}
-            onReUpload={handleRemoveFile}
-            onCommit={handleCommitClick}
-          />
-        )}
-      </div>
-      </>
+            {!hasFile ? (
+              <StepUpload onFileParsed={handleFileParsed} />
+            ) : (
+              <StepReview
+                users={parsedUsers}
+                fileName={fileName}
+                fileSize={fileSize}
+                fileRows={fileRows}
+                validCount={validRows.length}
+                errorCount={errorRows.length}
+                warningCount={warningRows.length}
+                skippedCount={skippedRows}
+                isCommitting={isCommitting}
+                onRemove={handleRemoveFile}
+                onReUpload={handleRemoveFile}
+                onCommit={handleCommitClick}
+              />
+            )}
+          </div>
+        </>
       )}
 
       {/* Confirm Modal */}
@@ -222,16 +218,16 @@ export default function BulkImportWizard() {
             {/* Icon */}
             <div className="w-14 h-14 rounded-2xl bg-accentOrange/10 border border-accentOrange/30 flex items-center justify-center mb-5">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="#f59e0b" strokeWidth="2"/>
-                <line x1="12" y1="8" x2="12" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="12" cy="16.5" r="1" fill="#f59e0b"/>
+                <circle cx="12" cy="12" r="10" stroke="#f59e0b" strokeWidth="2" />
+                <line x1="12" y1="8" x2="12" y2="13" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="12" cy="16.5" r="1" fill="#f59e0b" />
               </svg>
             </div>
 
             <h3 className="text-lg font-semibold text-white mb-3">{t('bulkImport.confirm.title')}</h3>
             <p className="text-sm text-textSidebarMuted leading-relaxed">
               {t('bulkImport.confirm.description', { count: validRows.length })}
-              {skippedRows > 0 && ` ${t('bulkImport.confirm.skippedNote', { count: skippedRows })}`}
+              {skippedRows > 0 && ` ${ t('bulkImport.confirm.skippedNote', { count: skippedRows }) }`}
               {' '}{t('bulkImport.confirm.auditNote')}
             </p>
 
@@ -262,26 +258,25 @@ export default function BulkImportWizard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md bg-bgStatCard border border-borderCard rounded-2xl p-8 shadow-2xl">
             {/* Icon */}
-            <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${
-              commitResults.success ? 'bg-accentGreen/10 border-accentGreen/30' : 'bg-accentRed/10 border-accentRed/30'
-            }`}>
+            <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-5 ${ commitResults.success ? 'bg-accentGreen/10 border-accentGreen/30' : 'bg-accentRed/10 border-accentRed/30'
+              }`}>
               {commitResults.success ? (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="#16a34a" strokeWidth="2"/>
-                  <path d="M8 12.5L11 15.5L16 9.5" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="12" cy="12" r="10" stroke="#16a34a" strokeWidth="2" />
+                  <path d="M8 12.5L11 15.5L16 9.5" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ) : (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" stroke="#dc2626" strokeWidth="2"/>
-                  <path d="M15 9L9 15M9 9L15 15" stroke="#dc2626" strokeWidth="2" strokeLinecap="round"/>
+                  <circle cx="12" cy="12" r="10" stroke="#dc2626" strokeWidth="2" />
+                  <path d="M15 9L9 15M9 9L15 15" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               )}
             </div>
 
-            <h3 className={`text-lg font-semibold mb-3 ${commitResults.success ? 'text-white' : 'text-accentRed'}`}>
+            <h3 className={`text-lg font-semibold mb-3 ${ commitResults.success ? 'text-white' : 'text-accentRed' }`}>
               {commitResults.success ? t('bulkImport.results.successTitle') : t('bulkImport.results.failureTitle')}
             </h3>
-            
+
             {commitResults.success ? (
               <p className="text-sm text-textSidebarMuted leading-relaxed mb-4">
                 {t('bulkImport.results.successDescription', { count: commitResults.createdCount })}

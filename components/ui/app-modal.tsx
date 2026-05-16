@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Button } from './button';
+import { AppAlert } from '../shared/app-alert';
 
 type ModalType = 'confirm' | 'success';
 
@@ -18,6 +19,7 @@ interface Props {
   doneLabel?: string;
 
   loading?: boolean;
+  error?: string | null;
 
   stats?: {
     label: string;
@@ -41,6 +43,7 @@ export default function AppModal({
   doneLabel = 'Done',
 
   loading = false,
+  error,
   stats = [],
 
   onConfirm,
@@ -127,6 +130,16 @@ export default function AppModal({
                 )}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* ERROR */}
+        {error && (
+          <div className="mb-4">
+            <AppAlert
+              variant="destructive"
+              description={error}
+            />
           </div>
         )}
 

@@ -15,7 +15,7 @@ export const getUsersAPI = async (params: {
 
 //using to approve and assign role of pending user list in admin
 export const getPendingUserAPI = async () => {
-  return await api.get(API.ADMIN.REGISTRATION)
+  return await api.get(API.ADMIN.REGISTRATIONS)
 }
 
 //approve the user and assign role
@@ -23,7 +23,7 @@ export const approveUserAPI = async (data: { userId: string, role: string }) => 
   const parsed = approveUserSchema.safeParse(data);
 
   if (!parsed.success) {
-    throw parsed.error; 
+    throw parsed.error;
   }
 
   const { userId, role } = parsed.data;

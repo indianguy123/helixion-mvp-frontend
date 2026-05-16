@@ -2,7 +2,32 @@
    "programme": {
       "available": "Available Programmes",
       "empty": "No programmes available right now.",
-      "enrol": "Enrol"
+      "enrol": "Enrol",
+      "livePreview": "Live preview",
+      "howToSee": "How participants will see this program",
+      "defaultTitle": "Program title appears here",
+      "defaultVenue": "Venue — not set",
+      "fields": {
+         "start": "Starts",
+         "end": "Ends",
+         "capacity": "Capacity",
+         "fees": "Fees",
+         "programTitle": "Program title",
+         "programTitlePlaceholder": "e.g. Accounting and Auditing Principles",
+         "programDates": "Program dates",
+         "venue": "Venue",
+         "venuePlaceholder": "e.g. Hotel Ritz, Kolkata",
+         "stayType": "Stay type",
+         "programFee": "Program fee",
+         "attachBrochure": "Attach brochure",
+         "minimumParticipants": "Minimum participants",
+         "maximumParticipants": "Maximum participants"
+      },
+      "createpageTitle": "Create new training program",
+      "createpageDescription": "Publish a single program to the Helixon marketplace.",
+      "createdetailsTitle": "Program details",
+      "createdetailsDescription": "All fields are required unless marked optional.",
+      "publishProgram": "Publish program"
    },
    "enrollment": {
       "title": "My Enrollments",
@@ -56,7 +81,10 @@
       "cancel": "cancel",
       "done": "Done",
       "send": "Send",
-      "confirm": "Confirm & Approve"
+      "confirm": "Confirm & Approve",
+      "preview": "preview",
+      "browse": "Browse",
+      "saveDraft": "Save draft"
    },
    "password": {
       "description": "Choose a strong password you haven’t used before.",
@@ -169,5 +197,32 @@
          "doneButton": "Done",
          "noValidUsers": "No valid users to process"
       }
+   },
+   "bulkProgram": {
+      "pageTitle": "Bulk Upload Programs",
+      "pageDescription": "Upload a CSV to create many programs at once.",
+      "pageTitleFull": "Bulk Upload Programs | Helixion Training Provider",
+      "breadcrumb": "PROGRAMS - BATCH PUBLISH",
+      "sectionTitle": "Bulk upload programs",
+      "sectionDescription": "Upload a CSV to create many programs at once. Preview before publishing.",
+      "trySample": "Try sample CSV",
+      "dropLabel": "Drop your CSV here, or click to browse",
+      "expectedColumns": "Expected columns: title, startDate, endDate, venue, isResidential, stayType, singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl, minParticipants, maxParticipants, status",
+      "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
+      "preview": "Preview: {fileName} (Showing top 5 rows)",
+      "publishButton": "Publish Programs",
+      "publishing": "Publishing...",
+      "cancelButton": "Cancel",
+      "resultsTitle": "Upload Results",
+      "uploadAnother": "Upload Another",
+      "programsCreated": "{count} programs created",
+      "rowsFailed": "{count} rows failed",
+      "rowErrors": "Row-level errors",
+      "successTitle": "Programs published!",
+      "successDescription": "{count} programs have been created successfully and are ready for review.",
+      "partialSuccessDescription": "{inserted} programs created. {failed} rows had validation errors.",
+      "errorInvalidFile": "Please upload a valid CSV file.",
+      "errorEmptyFile": "CSV file appears to be empty or invalid.",
+      "errorParseFailed": "Failed to parse CSV preview."
    }
 }

@@ -4,6 +4,8 @@ import type { User } from '@/types';
 import { decodeJwtPayload, getAccessToken } from '@/utils/token';
 import { redirect } from 'next/navigation';
 import { EMP_NAV_SECTIONS } from '@/constants/employee';
+import { PROVIDER_NAV_SECTIONS } from '@/constants/provider';
+import { USER_ROLES } from '@/constants/navigation';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -23,11 +25,16 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
     role: payload.role,
   };
 
+  // Choose navigation based on user role
+  const isProvider = payload.role === USER_ROLES.TRAINING_PROVIDER;
+  const navSections = isProvider ? PROVIDER_NAV_SECTIONS : EMP_NAV_SECTIONS;
+  const defaultActiveKey = isProvider ? 'dashboard' : 'enrollments';
+
   return (
    <DashboardShell
       user={user}
-      navSections={EMP_NAV_SECTIONS}
-      defaultActiveKey="enrollments"
+      navSections={navSections}
+      defaultActiveKey={defaultActiveKey}
     >
       {children}
     </DashboardShell>

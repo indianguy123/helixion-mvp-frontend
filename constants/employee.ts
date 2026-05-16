@@ -1,12 +1,12 @@
 import {  User } from "@/types";
 import { NavSection } from "../types/employee";
 
-
 // role value correspond display in UI
-export const ROLE_LABEL: Record<User['role'], string> = {
+export const ROLE_LABEL: Record<string, string> = {
   employee: 'Employee',
   manager: 'Manager',
   admin: 'Administrator',
+  'training-provider': 'TRAINING PROVIDER',
 };
 
 
