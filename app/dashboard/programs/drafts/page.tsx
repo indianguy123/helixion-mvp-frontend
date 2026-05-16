@@ -1,8 +1,9 @@
 import DraftProgramsList from '@/components/dashboard/provider/DraftProgramsList';
+import en from '@/message/en.json';
 
 export const metadata = {
-  title: 'Draft Programs | Helixion Training Provider',
-  description: 'View and manage your unpublished draft training programs.',
+  title: en.draftPrograms.pageTitleFull,
+  description: en.draftPrograms.pageDescription,
 };
 
 export default function DraftsPage() {

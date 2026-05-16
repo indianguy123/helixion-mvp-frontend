@@ -256,6 +256,10 @@
       "errorPublish": "Failed to publish program. Please try again.",
       "errorPublishDefault": "Failed to publish",
       "errorDelete": "Failed to delete draft. Please try again.",
-      "errorValidation": "Please fill in all required fields before publishing."
+      "errorValidation": "Please fill in all required fields before publishing.",
+      "pageTitleFull": "Draft Programs | Helixion Training Provider",
+      "pageDescription": "View and manage your unpublished draft training programs.",
+      "editPageTitleFull": "Edit Draft Program | Helixion Training Provider",
+      "editPageDescription": "Edit and update your draft training program details."
    }
 }

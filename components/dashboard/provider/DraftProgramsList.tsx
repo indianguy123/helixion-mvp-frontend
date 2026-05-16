@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Pencil, Send, Trash2 } from 'lucide-react';
 import { useDraftPrograms } from '@/hooks/useDraftPrograms';
 import { useDraftActions } from '@/hooks/useDraftActions';
 import { t } from '@/lib/i18n';
+import { formatDate, formatUpdatedAt } from '@/utils/formatters';
 import Badge from '@/components/ui/badge';
 import SearchInput from '@/components/ui/search-input';
 import AppModal from '@/components/ui/app-modal';
@@ -13,6 +13,7 @@ import { Spinner } from '@/components/ui/spinner';
 import DataTable from '@/components/shared/data-table';
 import PaginationController from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
+import DraftActions from './DraftActions';
 import type { DraftProgram } from '@/types';
 
 export default function DraftProgramsList() {
@@ -53,8 +54,6 @@ export default function DraftProgramsList() {
     if (ok) { setDeleteTarget(null); refresh(); }
   };
 
-  const fmtDate = (d?: string) => (d ? new Date(d).toISOString().split('T')[0] : '—');
-
   const fmtFee = (p: DraftProgram) => {
     const parts = [];
     if (p.singleOccupancyFee) parts.push(t('draftPrograms.feeSingle', { fee: p.singleOccupancyFee.toLocaleString('en-IN') }));
@@ -73,9 +72,6 @@ export default function DraftProgramsList() {
       </div>
     );
   };
-
-  const fmtUpdated = (d: string) =>
-    new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="w-full flex flex-col text-white font-sans">
@@ -146,17 +142,17 @@ export default function DraftProgramsList() {
                 render: (p: DraftProgram) => (
                   <div className="flex flex-col gap-0.5">
                     <span className="text-sm font-medium text-slate-200">{p.title}</span>
-                    <span className="text-[11px] text-white/35">{t('draftPrograms.lastUpdated')} {fmtUpdated(p.updatedAt)}</span>
+                    <span className="text-[11px] text-white/35">{t('draftPrograms.lastUpdated')} {formatUpdatedAt(p.updatedAt)}</span>
                   </div>
                 )
               },
               {
                 header: t('draftPrograms.columnStartDate'),
-                render: (p: DraftProgram) => <span className="text-sm text-white/70">{fmtDate(p.startDate)}</span>
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{formatDate(p.startDate)}</span>
               },
               {
                 header: t('draftPrograms.columnEndDate'),
-                render: (p: DraftProgram) => <span className="text-sm text-white/70">{fmtDate(p.endDate)}</span>
+                render: (p: DraftProgram) => <span className="text-sm text-white/70">{formatDate(p.endDate)}</span>
               },
               {
                 header: t('draftPrograms.columnVenue'),
@@ -173,20 +169,12 @@ export default function DraftProgramsList() {
               {
                 header: t('draftPrograms.columnActions'),
                 render: (p: DraftProgram) => (
-                  <div className="flex items-center gap-2">
-                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-white/10 hover:border-white/20 transition-colors"
-                      onClick={() => handleEdit(p._id)} id={`edit-draft-${p._id}`}>
-                      <Pencil size={14} />{t('draftPrograms.editButton')}
-                    </button>
-                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/80 bg-white/[0.06] border border-white/10 hover:bg-blue-500/15 hover:border-blue-500/30 hover:text-blue-300 transition-colors"
-                      onClick={() => setPublishTarget(p)} id={`publish-draft-${p._id}`}>
-                      <Send size={14} />{t('draftPrograms.publishButton')}
-                    </button>
-                    <button className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
-                      onClick={() => setDeleteTarget(p)} id={`delete-draft-${p._id}`}>
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                  <DraftActions
+                    program={p}
+                    onEdit={handleEdit}
+                    onPublish={setPublishTarget}
+                    onDelete={setDeleteTarget}
+                  />
                 )
               }
             ]}

@@ -1,8 +1,9 @@
 import EditDraftProgram from '@/components/dashboard/provider/EditDraftProgram';
+import en from '@/message/en.json';
 
 export const metadata = {
-  title: 'Edit Draft Program | Helixion Training Provider',
-  description: 'Edit and update your draft training program details.',
+  title: en.draftPrograms.editPageTitleFull,
+  description: en.draftPrograms.editPageDescription,
 };
 
 interface EditDraftPageProps {

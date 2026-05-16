@@ -2,16 +2,17 @@
 
 import { useState, useRef } from 'react';
 import FileDropzone from '@/components/shared/FileDropzone';
-import DataTable from '@/components/shared/data-table';
 import AppModal from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
-import { providerService, BulkUploadError, BulkUploadResult } from '@/services/provider.service';
+import { providerService, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 
-import { EXPECTED_COLUMNS, SAMPLE_CSV_HEADER, SAMPLE_CSV_ROW } from '@/constants/bulkProgram';
+import { SAMPLE_CSV_HEADER, SAMPLE_CSV_ROW } from '@/constants/bulkProgram';
 import { parseCsvPreview } from '@/utils/csv';
+import { downloadSampleCsv } from '@/utils/csvDownload';
 import BulkProgramPreview from './BulkProgramPreview';
+import BulkUploadResults from './BulkUploadResults';
 
 export default function BulkProgramUpload() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -73,33 +74,8 @@ export default function BulkProgramUpload() {
   };
 
   const handleDownloadSample = () => {
-    const csvContent = `${SAMPLE_CSV_HEADER}\n${SAMPLE_CSV_ROW}`;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sample_programs.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadSampleCsv(SAMPLE_CSV_HEADER, SAMPLE_CSV_ROW);
   };
-
-
-
-  const errorColumns = [
-    { header: 'Row', render: (err: BulkUploadError) => <span className="text-sm font-medium">{err.row}</span> },
-    {
-      header: 'Issues',
-      render: (err: BulkUploadError) => (
-        <ul className="list-disc list-inside text-sm">
-          {err.errors.map((e, i) => (
-            <li key={i} className="text-red-400">
-              <span className="font-medium text-white/70">{e.path}</span>: {e.message}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-  ];
 
   // Build modal stats and description from upload result
   const modalStats = uploadResult
@@ -162,42 +138,7 @@ export default function BulkProgramUpload() {
 
         {/* Upload Results */}
         {uploadResult && (
-          <div className="w-full bg-[#111827] rounded-xl border border-white/5 p-6 shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-md font-semibold text-slate-200">
-                {t('bulkProgram.resultsTitle')}
-              </h3>
-              <Button variant="ghost" onClick={handleReset}>
-                {t('bulkProgram.uploadAnother')}
-              </Button>
-            </div>
-
-            <div className="flex gap-6 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                <span className="text-sm text-white/70">
-                  {t('bulkProgram.programsCreated', { count: uploadResult.insertedCount })}
-                </span>
-              </div>
-              {uploadResult.failedCount > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <span className="text-sm text-white/70">
-                    {t('bulkProgram.rowsFailed', { count: uploadResult.failedCount })}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {uploadResult.errors.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-medium text-red-400 mb-2">
-                  {t('bulkProgram.rowErrors')}
-                </h4>
-                <DataTable data={uploadResult.errors} columns={errorColumns} />
-              </div>
-            )}
-          </div>
+          <BulkUploadResults uploadResult={uploadResult} onReset={handleReset} />
         )}
 
         {/* Preview Table */}

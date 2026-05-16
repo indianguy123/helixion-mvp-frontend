@@ -1,8 +1,9 @@
 import BulkProgramUpload from '@/components/dashboard/provider/BulkProgramUpload';
+import en from '@/message/en.json';
 
 export const metadata = {
-  title: 'Bulk Upload Programs | Helixion Training Provider',
-  description: 'Upload a CSV to create many programs at once.',
+  title: en.bulkProgram.pageTitleFull,
+  description: en.bulkProgram.pageDescription,
 };
 
 export default function BulkUploadPage() {
