@@ -15,6 +15,11 @@ export const NETWORK_ERRORS = {
   UNKNOWN_ERROR: 'An unexpected error occurred. Please try again.',
 } as const;
 
+export const REQUIRED_ERRORS ={
+  USERID:"UserId is required",
+  ROLE:"Role is required"
+} as const;
+
 export const VALIDATION_ERRORS = {
   EMAIL_INVALID: 'Please enter a valid email address.',
   EMAIL_REQUIRED: 'Email is required.',

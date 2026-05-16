@@ -81,8 +81,9 @@
       "cancel": "cancel",
       "done": "Done",
       "send": "Send",
+      "confirm": "Confirm & Approve",
       "preview": "preview",
-      "browse":"Browse",
+      "browse": "Browse",
       "saveDraft": "Save draft"
    },
    "password": {
@@ -103,6 +104,15 @@
       "deactivate": {
          "title": "Deactivate a user account",
          "description": "Search for a user. Deactivated accounts lose access immediately — data and history are retained and the account can be reactivated from All users."
+      },
+      "approveUser": {
+         "title": "Approve User",
+         "selectRole": "Select role",
+         "assignRole": "Assign Role",
+         "roleHelp": "Select the appropriate role for this user.",
+         "successTitle": "User Approved Successfully",
+         "successDescription": "The user has been assigned a role and approved successfully.",
+         "roleAssigned": "Role assigned"
       }
    },
    "bulkImport": {

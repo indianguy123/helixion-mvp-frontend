@@ -20,9 +20,13 @@ export interface Enrollment {
 // ─── Programme ───────────────────────────────────────────────────────────────
 export interface Programme {
   _id: string;
+  title: string;
+  duration: number;
+  venue: string;
+  start_date:Date,
+  end_date:Date
   name: string;
   description: string;
-  duration: string;
   mode: string;
   location: string;
   status: string;
