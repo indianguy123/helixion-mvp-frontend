@@ -37,7 +37,7 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: 'View Drafts',
         key: 'drafts',
-        href: '/dashboard/programs/drafts',
+        href: ROUTES.PROVIDER_DRAFTS,
         icon: 'file-text',
       },
     ],
@@ -67,7 +67,7 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
   },
 ];
 
-/** Expected CSV column headers for bulk program upload — mirrors the backend Zod schema */
+/** Expected CSV column headers for bulk program upload ΓÇö mirrors the backend Zod schema */
 export const PROGRAM_CSV_COLUMNS = [
   'title', 'startDate', 'endDate', 'venue', 'isResidential', 'stayType',
   'singleOccupancyFee', 'twinSharingFee', 'nonResidentialFee',

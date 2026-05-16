@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import FileDropzone from '@/components/shared/FileDropzone';
 import AppModal from '@/components/ui/app-modal';
-import { providerService, BulkUploadError } from '@/services/provider.service';
+import { Button } from '@/components/ui/button';
+import { providerService, BulkUploadResult } from '@/services/provider.service';
 import { t } from '@/lib/i18n';
 import { toast } from 'sonner';
 import Papa from 'papaparse';
 import { PROGRAM_CSV_COLUMNS, SAMPLE_CSV_ROW } from '@/constants/provider';
+
 
 import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
@@ -19,11 +22,7 @@ export default function BulkProgramUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [uploadResult, setUploadResult] = useState<{
-    insertedCount: number;
-    failedCount: number;
-    errors: BulkUploadError[];
-  } | null>(null);
+  const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelected = (file: File) => {

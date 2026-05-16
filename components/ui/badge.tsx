@@ -25,6 +25,8 @@ const badgeVariants = cva(
           "bg-emerald-950/60 text-emerald-400 ring-1 ring-emerald-500/20",
         completed:
           "bg-blue-950/60 text-blue-300 ring-1 ring-blue-500/20",
+        draft:
+          "bg-amber-950/60 text-amber-400 ring-1 ring-amber-500/20",
       },
     },
 
@@ -43,7 +45,7 @@ export default function Badge({
 }: React.ComponentProps<"span"> &
   VariantProps<typeof badgeVariants> & {
     asChild?: boolean;
-    status?: "pending" | "active" | "completed";
+    status?: "pending" | "active" | "completed" | "draft";
   }) {
   const Comp = asChild ? Slot.Root : "span";
 

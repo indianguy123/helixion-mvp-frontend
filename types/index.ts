@@ -33,12 +33,42 @@ export interface Programme {
   fee: number;
 }
 
+// ─── Draft Program (Training Provider) ───────────────────────────────────────
+export interface DraftProgram {
+  _id: string;
+  title: string;
+  startDate: string;
+  endDate?: string;
+  venue?: string;
+  singleOccupancyFee?: number;
+  twinSharingFee?: number;
+  nonResidentialFee?: number;
+  brochureUrl?: string;
+  brochurePublicId?: string;
+  minParticipants?: number;
+  maxParticipants?: number;
+  status: 'draft' | 'published';
+  training_providerId: string;
+  batchId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ─── Draft Programs Paginated Response ───────────────────────────────────────
+export interface DraftProgramsResponse {
+  programs: DraftProgram[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 // ─── Nav Item ────────────────────────────────────────────────────────────────
 export interface NavItem {
   label: string;
   key: string;
   href?: string;
   icon: string;
+  badge?: number;
 }
 
 // stay Options in stay type of program creation

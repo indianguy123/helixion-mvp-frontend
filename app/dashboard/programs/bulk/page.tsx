@@ -1,9 +1,11 @@
 import BulkProgramUpload from '@/components/dashboard/provider/BulkProgramUpload';
-import messages from '@/message/en.json';
+
+import en from '@/message/en.json';
 
 export const metadata = {
-  title: messages.bulkProgram.pageTitleFull,
-  description: messages.bulkProgram.pageDescription,
+  title: en.bulkProgram.pageTitleFull,
+  description: en.bulkProgram.pageDescription,
+
 };
 
 export default function BulkUploadPage() {
