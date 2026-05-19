@@ -178,3 +178,50 @@ export default function PaginationController({
     </Pagination>
   );
 }
+
+export interface TablePaginationProps {
+  page: number;
+  limit: number;
+  total: number;
+  onPageChange: (page: number) => void;
+  rowsPerPageLabel?: string;
+}
+
+export function TablePagination({
+  page,
+  limit,
+  total,
+  onPageChange,
+  rowsPerPageLabel = "Rows per page:",
+}: TablePaginationProps) {
+  return (
+    <div className="flex items-center text-sm text-gray-400">
+      <span>
+        {rowsPerPageLabel} {limit}
+      </span>
+      <span className="mx-4">
+        {(page - 1) * limit + 1}-{Math.min(page * limit, total)} of {total}
+      </span>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-transparent border-[#4a5568] hover:bg-[#2d3748] text-white w-8 h-8 p-0"
+          disabled={page === 1}
+          onClick={() => onPageChange(page - 1)}
+        >
+          &lt;
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-transparent border-[#4a5568] hover:bg-[#2d3748] text-white w-8 h-8 p-0"
+          disabled={page * limit >= total}
+          onClick={() => onPageChange(page + 1)}
+        >
+          &gt;
+        </Button>
+      </div>
+    </div>
+  );
+}

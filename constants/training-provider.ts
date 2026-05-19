@@ -55,7 +55,7 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
         icon: "download",
       },
       {
-        label: "Upload Attendance",
+        label: "Update Attendance",
         key: "upload_attendance",
         href: "/dashboard/update-attendance",
         icon: "clipboard-check",
