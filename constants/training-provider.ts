@@ -1,6 +1,7 @@
 import { StayType } from "@/types";
 import { NavSection } from "@/types/employee";
 import { STAY_TYPES } from "./content";
+import { ROUTES } from "./navigation";
 
 export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
   {
@@ -57,7 +58,7 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: "Update Attendance",
         key: "upload_attendance",
-        href: "/dashboard/update-attendance",
+        href: ROUTES.PROVIDER_ATTENDANCE,
         icon: "clipboard-check",
       },
       {

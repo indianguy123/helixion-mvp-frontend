@@ -54,7 +54,7 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: 'Update Attendance',
         key: 'attendance',
-        href: '/dashboard/update-attendance',
+        href: ROUTES.PROVIDER_ATTENDANCE,
         icon: 'clipboard-check',
       },
       {
