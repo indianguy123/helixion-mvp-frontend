@@ -27,9 +27,9 @@ export default function UpdateAttendancePage() {
     try {
       setLoading(true);
       const res = await attendanceService.getPrograms(page, limit);
-      const payload = res.data || res;
-      setPrograms(payload.programs || []);
-      setTotal(payload.total || 0);
+      const payload = res.data ?? res;
+      setPrograms(payload.programs ?? []);
+      setTotal(payload.total ?? 0);
     } catch (error) {
       console.error("Failed to fetch programs", error);
     } finally {
