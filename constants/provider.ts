@@ -52,10 +52,10 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
         icon: 'download',
       },
       {
-        label: 'Upload Attendance',
+        label: 'Update Attendance',
         key: 'attendance',
-        href: '/dashboard/operations/attendance',
-        icon: 'upload',
+        href: '/dashboard/update-attendance',
+        icon: 'clipboard-check',
       },
       {
         label: 'View Reports',

@@ -300,5 +300,30 @@
       "editPageTitleFull": "Edit Draft Program | Helixion Training Provider",
       "editPageDescription": "Edit and update your draft training program details.",
       "errorParseFailed": "Failed to parse CSV preview."
+   },
+   "updateAttendance": {
+      "pageTitle": "Select training program",
+      "columnProgramTitle": "Program title",
+      "columnStartDate": "Start date",
+      "columnVenue": "Venue",
+      "columnStatus": "Status",
+      "rowsPerPage": "Rows per page:",
+      "updateButton": "Update attendance →",
+      "participantList": "Participant list",
+      "columnName": "# Name",
+      "columnPresent": "Present",
+      "columnAbsent": "Absent",
+      "backButton": "← Back",
+      "saveButton": "Save attendance",
+      "confirmModalTitle": "Save attendance?",
+      "confirmModalDesc": "You are saving attendance for {program}. This will update records for {count} participants.",
+      "confirmDisagree": "Disagree",
+      "confirmAgree": "Agree",
+      "successModalTitle": "Attendance saved!",
+      "successModalDesc": "Attendance for {program} has been recorded successfully.",
+      "successOkay": "Okay",
+      "errorLoadPrograms": "Failed to load programs",
+      "errorLoadParticipants": "Failed to load participants",
+      "errorSaveAttendance": "Failed to save attendance"
    }
 }

@@ -16,6 +16,10 @@ export const API = {
       DASHBOARD: '/employee/dashboard'
    },
    TRAININGPROVIDER:{
-      CREATEPROGRAM:'/training-provider/create/program'
+      CREATEPROGRAM:'/training-provider/create/program',
+      PROGRAMS: '/training-provider/programs',
+      PARTICIPANTS: (id: string) => `/training-provider/programs/${id}/participants`,
+      ATTENDANCE: (id: string) => `/training-provider/programs/${id}/attendance`,
+      ATTENDANCE_SINGLE: (id: string, pid: string) => `/training-provider/programs/${id}/attendance/${pid}`
    }
 }
