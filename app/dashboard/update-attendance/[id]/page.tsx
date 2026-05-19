@@ -9,6 +9,31 @@ import { ParticipantListTable } from "@/components/dashboard/update-attendance/P
 import { AttendanceModals } from "@/components/dashboard/update-attendance/AttendanceModals";
 import { ROUTES } from "@/constants/navigation";
 
+function normalizeParticipants(raw: unknown[]): Participant[] {
+  return raw.map((item) => {
+    const p = item as Record<string, unknown>;
+    const id = p.id ?? p._id ?? p.userId;
+    return {
+      id: String(id),
+      username: String(p.username ?? ""),
+      email: String(p.email ?? ""),
+    };
+  });
+}
+
+function buildAttendanceMap(records: unknown[]): { [key: string]: "present" | "absent" } {
+  const map: { [key: string]: "present" | "absent" } = {};
+  if (!Array.isArray(records) || records.length === 0) return map;
+
+  const record = records[0] as { participants?: Array<{ participantId?: unknown; present_status?: "present" | "absent" }> };
+  (record.participants ?? []).forEach((p) => {
+    if (p.participantId && p.present_status) {
+      map[String(p.participantId)] = p.present_status;
+    }
+  });
+  return map;
+}
+
 export default function ManageAttendancePage() {
   const t = en.updateAttendance;
   const router = useRouter();
@@ -37,32 +62,20 @@ export default function ManageAttendancePage() {
       setLoading(true);
 
       const programsRes = await attendanceService.getPrograms(1, 100);
-      const payload = programsRes.data || programsRes;
-      const progs: Program[] = payload.programs || [];
-      const currentProgram = progs.find((p: Program) => p._id === programId) || null;
-      setProgram(currentProgram);
+      const payload = programsRes.data ?? programsRes;
+      const progs: Program[] = payload.programs ?? [];
+      setProgram(progs.find((p) => p._id === programId) ?? null);
 
       const participantsRes = await attendanceService.getParticipants(programId);
-      const participantData = participantsRes.data || participantsRes || [];
-      setParticipants(participantData);
+      const participantData = participantsRes.data ?? participantsRes ?? [];
+      setParticipants(normalizeParticipants(Array.isArray(participantData) ? participantData : []));
 
       try {
         const attendanceRes = await attendanceService.getAttendance(programId);
-        const attendanceData = attendanceRes.data || attendanceRes || [];
-        const attendanceMap: { [key: string]: "present" | "absent" } = {};
-
-        if (attendanceData.length > 0) {
-          const record = attendanceData[0];
-          (record.participants || []).forEach((p: any) => {
-            if (p.participantId && p.present_status) {
-              attendanceMap[p.participantId.toString()] = p.present_status;
-            }
-          });
-        }
-
-        setAttendance(attendanceMap);
+        const attendanceData = attendanceRes.data ?? attendanceRes ?? [];
+        setAttendance(buildAttendanceMap(Array.isArray(attendanceData) ? attendanceData : []));
       } catch (err) {
-        console.error("No existing attendance found or error fetching");
+        console.error("No existing attendance found or error fetching", err);
       }
     } catch (error) {
       console.error("Failed to fetch data", error);
@@ -100,15 +113,14 @@ export default function ManageAttendancePage() {
       }
 
       const today = new Date().toISOString().split("T")[0];
-
       await attendanceService.saveAttendance(programId, today, records);
 
       setConfirmModalOpen(false);
       setSuccessModalOpen(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      console.error("API Error Details:", err.response?.data);
-      const apiMsg = err.response?.data?.message;
+      const apiErr = err as { response?: { data?: { message?: string | string[] } } };
+      const apiMsg = apiErr.response?.data?.message;
       const errorMsg = Array.isArray(apiMsg) ? apiMsg.join(", ") : apiMsg;
       setError(errorMsg || t.errorSaveAttendance || "Failed to save attendance");
     } finally {
