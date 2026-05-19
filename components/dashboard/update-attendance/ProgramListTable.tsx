@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TablePagination } from "@/components/ui/pagination";
+import PaginationController from "@/components/ui/pagination";
 import { Program } from "@/services/attendanceService";
 
 interface ProgramListTableProps {
@@ -111,12 +111,10 @@ export function ProgramListTable({
 
       <div className="flex flex-col items-end mt-4">
         <div className="mb-6 mr-2">
-          <TablePagination
+          <PaginationController
             page={page}
-            limit={limit}
-            total={total}
+            totalPages={Math.ceil(total / limit) || 1}
             onPageChange={onPageChange}
-            rowsPerPageLabel={t.rowsPerPage}
           />
         </div>
 
