@@ -7,6 +7,7 @@ import en from "@/message/en.json";
 import { attendanceService, Participant, Program } from "@/services/attendanceService";
 import { ParticipantListTable } from "@/components/dashboard/update-attendance/ParticipantListTable";
 import { AttendanceModals } from "@/components/dashboard/update-attendance/AttendanceModals";
+import { ROUTES } from "@/constants/navigation";
 
 export default function ManageAttendancePage() {
   const t = en.updateAttendance;
@@ -17,11 +18,10 @@ export default function ManageAttendancePage() {
   const [program, setProgram] = useState<Program | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [attendance, setAttendance] = useState<{ [key: string]: "present" | "absent" }>({});
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
-  // Modal states
+
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,28 +36,21 @@ export default function ManageAttendancePage() {
     try {
       setLoading(true);
 
-      // Fetch programs to find the current program details
       const programsRes = await attendanceService.getPrograms(1, 100);
-      // Backend returns { success, data: { programs, total, ... } }
       const payload = programsRes.data || programsRes;
       const progs: Program[] = payload.programs || [];
       const currentProgram = progs.find((p: Program) => p._id === programId) || null;
       setProgram(currentProgram);
 
-      // Fetch participants
-      // Backend returns { success, data: [ { id, username, email }, ... ] }
       const participantsRes = await attendanceService.getParticipants(programId);
       const participantData = participantsRes.data || participantsRes || [];
       setParticipants(participantData);
 
-      // Fetch existing attendance (pre-fill)
-      // Backend returns { success, data: [ { date, programId, participants: [ { participantId, present_status, user } ] } ] }
       try {
         const attendanceRes = await attendanceService.getAttendance(programId);
         const attendanceData = attendanceRes.data || attendanceRes || [];
         const attendanceMap: { [key: string]: "present" | "absent" } = {};
 
-        // The response is an array of attendance documents; take the first (latest)
         if (attendanceData.length > 0) {
           const record = attendanceData[0];
           (record.participants || []).forEach((p: any) => {
@@ -71,7 +64,6 @@ export default function ManageAttendancePage() {
       } catch (err) {
         console.error("No existing attendance found or error fetching");
       }
-
     } catch (error) {
       console.error("Failed to fetch data", error);
     } finally {
@@ -107,11 +99,10 @@ export default function ManageAttendancePage() {
         return;
       }
 
-      // Backend requires a date field
       const today = new Date().toISOString().split("T")[0];
 
       await attendanceService.saveAttendance(programId, today, records);
-      
+
       setConfirmModalOpen(false);
       setSuccessModalOpen(true);
     } catch (err: any) {
@@ -127,11 +118,11 @@ export default function ManageAttendancePage() {
 
   const handleDone = () => {
     setSuccessModalOpen(false);
-    router.push("/dashboard/update-attendance");
+    router.push(ROUTES.PROVIDER_ATTENDANCE);
   };
 
   const programTitle = program?.title || "Program";
-  
+
   return (
     <div className="flex flex-col h-full bg-[#1e2329] rounded-md border border-[#333b45] p-6 text-white min-h-[600px]">
       <div className="flex flex-col items-center justify-center mb-8">
@@ -144,7 +135,7 @@ export default function ManageAttendancePage() {
                   month: "short",
                   year: "numeric",
                 })
-              : "-"} {" "}
+              : "-"}{" "}
             · {program.venue} · {participants.length} participants
           </p>
         )}
@@ -163,14 +154,14 @@ export default function ManageAttendancePage() {
       />
 
       <div className="flex justify-center w-full gap-4 mt-8">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => router.back()}
           className="bg-transparent text-white border border-gray-500 hover:bg-gray-800"
         >
           {t.backButton}
         </Button>
-        <Button 
+        <Button
           onClick={handleSaveClick}
           className="bg-transparent text-white border border-gray-500 hover:bg-gray-800"
         >

@@ -7,6 +7,16 @@ const nextConfig = {
         destination: "/signin",
         permanent: false,
       },
+      {
+        source: "/dashboard/update-attendance",
+        destination: "/dashboard/operations/attendance",
+        permanent: true,
+      },
+      {
+        source: "/dashboard/update-attendance/:id",
+        destination: "/dashboard/operations/attendance/:id",
+        permanent: true,
+      },
     ];
   },
 };

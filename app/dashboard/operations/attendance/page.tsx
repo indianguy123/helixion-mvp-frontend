@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import en from "@/message/en.json";
 import { attendanceService, Program } from "@/services/attendanceService";
 import { ProgramListTable } from "@/components/dashboard/update-attendance/ProgramListTable";
+import { ROUTES } from "@/constants/navigation";
 
 export default function UpdateAttendancePage() {
   const t = en.updateAttendance;
@@ -13,8 +14,7 @@ export default function UpdateAttendancePage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
-  
-  // Pagination state
+
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
@@ -27,7 +27,6 @@ export default function UpdateAttendancePage() {
     try {
       setLoading(true);
       const res = await attendanceService.getPrograms(page, limit);
-      // Backend returns { success, data: { programs, total, page, limit, totalPages } }
       const payload = res.data || res;
       setPrograms(payload.programs || []);
       setTotal(payload.total || 0);
@@ -44,7 +43,7 @@ export default function UpdateAttendancePage() {
 
   const handleUpdateClick = () => {
     if (selectedProgramId) {
-      router.push(`/dashboard/update-attendance/${selectedProgramId}`);
+      router.push(`${ROUTES.PROVIDER_ATTENDANCE}/${selectedProgramId}`);
     }
   };
 
