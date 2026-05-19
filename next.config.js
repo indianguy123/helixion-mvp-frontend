@@ -8,14 +8,14 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: "/dashboard/update-attendance",
-        destination: "/dashboard/operations/attendance",
-        permanent: true,
+        source: "/dashboard/operations/attendance",
+        destination: "/dashboard/update-attendance",
+        permanent: false,
       },
       {
-        source: "/dashboard/update-attendance/:id",
-        destination: "/dashboard/operations/attendance/:id",
-        permanent: true,
+        source: "/dashboard/operations/attendance/:id",
+        destination: "/dashboard/update-attendance/:id",
+        permanent: false,
       },
     ];
   },
