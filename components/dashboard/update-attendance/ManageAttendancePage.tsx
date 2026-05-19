@@ -138,7 +138,7 @@ export function ManageAttendancePage() {
   const programTitle = program?.title || "Program";
 
   return (
-    <div className="flex flex-col h-full bg-[#1e2329] rounded-md border border-[#333b45] p-6 text-white min-h-[600px]">
+    <div className="flex flex-col h-full bg-card rounded-xl border border-[#333b45] p-6 text-card-foreground min-h-[600px]">
       <div className="flex flex-col items-center justify-center mb-8">
         <h2 className="text-lg font-semibold">Program: {programTitle}</h2>
         {program && (

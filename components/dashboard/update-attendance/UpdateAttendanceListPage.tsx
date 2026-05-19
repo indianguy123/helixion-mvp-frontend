@@ -48,7 +48,7 @@ export function UpdateAttendanceListPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#1e2329] rounded-md border border-[#333b45] p-6 text-white min-h-[600px]">
+    <div className="flex flex-col h-full bg-card rounded-xl border border-[#333b45] p-6 text-card-foreground min-h-[600px]">
       <div className="flex items-center justify-center mb-6">
         <h2 className="text-lg font-semibold">{t.pageTitle}</h2>
       </div>
