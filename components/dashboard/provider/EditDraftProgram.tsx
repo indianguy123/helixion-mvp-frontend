@@ -82,9 +82,9 @@ export default function EditDraftProgram({ programId }: EditDraftProgramProps) {
     const saved = await saveDraft(programId, buildPayload(), brochureFile || undefined);
     if (!saved) return;
     const result = await publishDraft(programId);
-    if (result.success) { 
-      setShowPublishModal(false); 
-      router.push('/dashboard/programs/drafts'); 
+    if (result.success) {
+      setShowPublishModal(false);
+      router.push('/dashboard');
     } else {
       setPublishError(result.error || t('draftPrograms.errorPublishDefault'));
     }

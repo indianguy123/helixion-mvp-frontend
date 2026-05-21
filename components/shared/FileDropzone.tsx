@@ -55,6 +55,7 @@ export default function FileDropzone({
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (e.target) e.target.value = '';
     if (file) onFileSelected(file);
   }, [onFileSelected]);
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import FileDropzone from '@/components/shared/FileDropzone';
 import AppModal from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ import UploadPreview from './UploadPreview';
 import UploadResults from './UploadResults';
 
 export default function BulkProgramUpload() {
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -49,6 +51,23 @@ export default function BulkProgramUpload() {
           toast.error(t('bulkProgram.errorEmptyFile'));
           return;
         }
+
+        const headers = results.meta?.fields || [];
+        const requiredCols = PROGRAM_CSV_COLUMNS.filter(c => c !== 'brochureUrl');
+        const missingHeader = requiredCols.some(col => !headers.includes(col));
+
+        if (!missingHeader) {
+          const hasEmptyCell = (results.data as any[]).some(row =>
+            row && typeof row === 'object' && requiredCols.some(col => {
+              const val = row[col];
+              return val === undefined || val === null || String(val).trim() === '';
+            })
+          );
+          if (hasEmptyCell) { alert('please fill all the required fields'); return; }
+        } else {
+          alert('please fill all the required fields'); return;
+        }
+
         setPreviewData(results.data);
       },
       error: (error) => {
@@ -97,34 +116,34 @@ export default function BulkProgramUpload() {
   // Build modal stats and description from upload result
   const modalStats = uploadResult
     ? [
-        {
-          label: t('bulkProgram.programsCreated', {
-            count: uploadResult.insertedCount,
-          }),
-          variant: 'green' as const,
-        },
-        ...(uploadResult.failedCount > 0
-          ? [
-              {
-                label: t('bulkProgram.rowsFailed', {
-                  count: uploadResult.failedCount,
-                }),
-                variant: 'orange' as const,
-              },
-            ]
-          : []),
-      ]
+      {
+        label: t('bulkProgram.programsCreated', {
+          count: uploadResult.insertedCount,
+        }),
+        variant: 'green' as const,
+      },
+      ...(uploadResult.failedCount > 0
+        ? [
+          {
+            label: t('bulkProgram.rowsFailed', {
+              count: uploadResult.failedCount,
+            }),
+            variant: 'orange' as const,
+          },
+        ]
+        : []),
+    ]
     : [];
 
   const modalDescription = uploadResult
     ? uploadResult.failedCount > 0
       ? t('bulkProgram.partialSuccessDescription', {
-          inserted: uploadResult.insertedCount,
-          failed: uploadResult.failedCount,
-        })
+        inserted: uploadResult.insertedCount,
+        failed: uploadResult.failedCount,
+      })
       : t('bulkProgram.successDescription', {
-          count: uploadResult.insertedCount,
-        })
+        count: uploadResult.insertedCount,
+      })
     : '';
 
   return (
@@ -136,7 +155,10 @@ export default function BulkProgramUpload() {
         description={modalDescription}
         stats={modalStats}
         doneLabel={t('button.done')}
-        onDone={handleReset}
+        onDone={() => {
+          handleReset();
+          router.push('/dashboard/programs/drafts');
+        }}
       />
 
       <UploadHeader onDownloadSample={handleDownloadSample} />
