@@ -16,7 +16,7 @@ export function UpdateAttendanceListPage() {
   const [selectedProgramId, setSelectedProgramId] = useState<string | null>(null);
 
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -28,7 +28,14 @@ export function UpdateAttendanceListPage() {
       setLoading(true);
       const res = await attendanceService.getPrograms(page, limit);
       const payload = res.data ?? res;
-      setPrograms(payload.programs ?? []);
+      const allPrograms = payload.programs ?? [];
+      const now = Date.now();
+      const filteredPrograms = allPrograms.filter((p: any) => {
+        if (!p.endDate) return false;
+        return new Date(p.endDate).getTime() <= now;
+      });
+
+      setPrograms(filteredPrograms);
       setTotal(payload.total ?? 0);
     } catch (error) {
       console.error("Failed to fetch programs", error);

@@ -49,6 +49,35 @@ export default function BulkProgramUpload() {
           toast.error(t('bulkProgram.errorEmptyFile'));
           return;
         }
+
+        const headers = results.meta?.fields || [];
+        for (const col of PROGRAM_CSV_COLUMNS) {
+          if (col !== 'brochureUrl' && !headers.includes(col)) {
+            alert('please fill all the required fields');
+            return;
+          }
+        }
+
+        let hasMissingFields = false;
+        for (const row of results.data as any[]) {
+          if (!row || typeof row !== 'object') continue;
+          for (const col of PROGRAM_CSV_COLUMNS) {
+            if (col !== 'brochureUrl') {
+              const val = row[col];
+              if (val === undefined || val === null || String(val).trim() === '') {
+                hasMissingFields = true;
+                break;
+              }
+            }
+          }
+          if (hasMissingFields) break;
+        }
+
+        if (hasMissingFields) {
+          alert('please fill all the required fields');
+          return;
+        }
+
         setPreviewData(results.data);
       },
       error: (error) => {
@@ -97,34 +126,34 @@ export default function BulkProgramUpload() {
   // Build modal stats and description from upload result
   const modalStats = uploadResult
     ? [
-        {
-          label: t('bulkProgram.programsCreated', {
-            count: uploadResult.insertedCount,
-          }),
-          variant: 'green' as const,
-        },
-        ...(uploadResult.failedCount > 0
-          ? [
-              {
-                label: t('bulkProgram.rowsFailed', {
-                  count: uploadResult.failedCount,
-                }),
-                variant: 'orange' as const,
-              },
-            ]
-          : []),
-      ]
+      {
+        label: t('bulkProgram.programsCreated', {
+          count: uploadResult.insertedCount,
+        }),
+        variant: 'green' as const,
+      },
+      ...(uploadResult.failedCount > 0
+        ? [
+          {
+            label: t('bulkProgram.rowsFailed', {
+              count: uploadResult.failedCount,
+            }),
+            variant: 'orange' as const,
+          },
+        ]
+        : []),
+    ]
     : [];
 
   const modalDescription = uploadResult
     ? uploadResult.failedCount > 0
       ? t('bulkProgram.partialSuccessDescription', {
-          inserted: uploadResult.insertedCount,
-          failed: uploadResult.failedCount,
-        })
+        inserted: uploadResult.insertedCount,
+        failed: uploadResult.failedCount,
+      })
       : t('bulkProgram.successDescription', {
-          count: uploadResult.insertedCount,
-        })
+        count: uploadResult.insertedCount,
+      })
     : '';
 
   return (

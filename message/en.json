@@ -210,7 +210,7 @@
       "expectedColumns": "Expected columns: title, startDate, endDate, venue, isResidential, stayType, singleOccupancyFee, twinSharingFee, nonResidentialFee, brochureUrl, minParticipants, maxParticipants, status",
       "footerHint": "Max 500 rows per file - Duplicates will be flagged in preview",
       "preview": "Preview: {fileName} (Showing top 5 rows)",
-      "publishButton": "Publish Programs",
+      "publishButton": "Save to drafts",
       "publishing": "Publishing...",
       "cancelButton": "Cancel",
       "resultsTitle": "Upload Results",
@@ -224,6 +224,7 @@
       "errorInvalidFile": "Please upload a valid CSV file.",
       "errorEmptyFile": "CSV file appears to be empty or invalid.",
       "errorParseFailed": "Failed to parse CSV preview.",
+      "errorMissingFields": "All fields except brochureUrl are required.",
       "errorUploadFailed": "Failed to upload programs. Please try again."
    },
    "draftPrograms": {
