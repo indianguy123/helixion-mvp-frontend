@@ -34,6 +34,7 @@ export function UpdateAttendanceListPage() {
         if (!p.endDate) return false;
         return new Date(p.endDate).getTime() <= now;
       });
+
       setPrograms(filteredPrograms);
       setTotal(payload.total ?? 0);
     } catch (error) {

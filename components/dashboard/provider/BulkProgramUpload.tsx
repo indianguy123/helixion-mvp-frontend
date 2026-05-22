@@ -53,19 +53,31 @@ export default function BulkProgramUpload() {
         }
 
         const headers = results.meta?.fields || [];
-        const requiredCols = PROGRAM_CSV_COLUMNS.filter(c => c !== 'brochureUrl');
-        const missingHeader = requiredCols.some(col => !headers.includes(col));
+        for (const col of PROGRAM_CSV_COLUMNS) {
+          if (col !== 'brochureUrl' && !headers.includes(col)) {
+            alert('please fill all the required fields');
+            return;
+          }
+        }
 
-        if (!missingHeader) {
-          const hasEmptyCell = (results.data as any[]).some(row =>
-            row && typeof row === 'object' && requiredCols.some(col => {
+        let hasMissingFields = false;
+        for (const row of results.data as any[]) {
+          if (!row || typeof row !== 'object') continue;
+          for (const col of PROGRAM_CSV_COLUMNS) {
+            if (col !== 'brochureUrl') {
               const val = row[col];
-              return val === undefined || val === null || String(val).trim() === '';
-            })
-          );
-          if (hasEmptyCell) { alert('please fill all the required fields'); return; }
-        } else {
-          alert('please fill all the required fields'); return;
+              if (val === undefined || val === null || String(val).trim() === '') {
+                hasMissingFields = true;
+                break;
+              }
+            }
+          }
+          if (hasMissingFields) break;
+        }
+
+        if (hasMissingFields) {
+          alert('please fill all the required fields');
+          return;
         }
 
         setPreviewData(results.data);

@@ -224,6 +224,7 @@
       "errorInvalidFile": "Please upload a valid CSV file.",
       "errorEmptyFile": "CSV file appears to be empty or invalid.",
       "errorParseFailed": "Failed to parse CSV preview.",
+      "errorMissingFields": "All fields except brochureUrl are required.",
       "errorUploadFailed": "Failed to upload programs. Please try again."
    },
    "draftPrograms": {
