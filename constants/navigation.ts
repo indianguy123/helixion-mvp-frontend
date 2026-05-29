@@ -25,9 +25,11 @@ export const ROUTES = {
 
   // Provider routes
   PROVIDER_DASHBOARD: '/dashboard',
+  PROVIDER_CREATE_PROGRAM: '/dashboard/programs/create',
   PROVIDER_BULK_UPLOAD: '/dashboard/programs/bulk',
   PROVIDER_DRAFTS: '/dashboard/programs/drafts',
   PROVIDER_ATTENDANCE: '/dashboard/update-attendance',
+  PROVIDER_EXPORT_ENROLMENT: '/dashboard/operations/enrolments',
 } as const;
 
 // Navigation item type - using Lucide icon type

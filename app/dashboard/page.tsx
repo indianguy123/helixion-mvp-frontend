@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const token = await getAccessToken();
   if (!token) redirect(ROUTES.SIGNIN);
 
-  const { role } = await decodeJwtPayload(token);
+  const { role, name } = await decodeJwtPayload(token);
 
-  return <RoleDashboardView role={role}  />;
+  return <RoleDashboardView role={role} name={name} />;
 }

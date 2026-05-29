@@ -33,7 +33,39 @@ export interface UpdateDraftPayload {
   brochureUrl?: string;
 }
 
-// ΓöÇΓöÇΓöÇ Provider Service ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+// ─── Dashboard Types ─────────────────────────────────────────────────────────
+
+export interface DashboardOverview {
+  livePrograms: number;
+  drafts: number;
+  totalEnrollments: number;
+  averageFillRate: number;
+  todayEnrollmentCount: number;
+  todayAttendance: number;
+}
+
+export interface DashboardTopProgram {
+  _id: string;
+  title: string;
+  startDate: string;
+  enrolledCount: number;
+  maxParticipants: number;
+  fillRate: number;
+}
+
+export interface DashboardActivity {
+  type: 'published' | 'draft' | 'bulk_upload' | 'enrollment' | 'attendance' | string;
+  message: string;
+  time: string;
+}
+
+export interface ProviderDashboardResponse {
+  overview: DashboardOverview;
+  topPrograms: DashboardTopProgram[];
+  recentActivities: DashboardActivity[];
+}
+
+// ─── Provider Service ────────────────────────────────────────────────────────
 
 export const providerService = {
   /**
@@ -102,7 +134,7 @@ export const providerService = {
   },
 
   /**
-   * Publish a draft program (change status from draft ΓåÆ published).
+   * Publish a draft program (change status from draft → published).
    */
   publishDraft: async (id: string): Promise<void> => {
     await api.patch(`/training-provider/programs/${id}/publish`);
@@ -113,5 +145,15 @@ export const providerService = {
    */
   deleteDraft: async (id: string): Promise<void> => {
     await api.delete(`/training-provider/programs/${id}`);
+  },
+
+  /**
+   * Fetch real training provider dashboard data from backend.
+   */
+  getDashboardData: async (): Promise<ProviderDashboardResponse> => {
+    const response = await api.get<{ data: ProviderDashboardResponse }>(
+      '/training-provider/dashboard'
+    );
+    return response.data.data;
   },
 };
