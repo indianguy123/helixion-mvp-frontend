@@ -9,14 +9,19 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { t } from '@/lib/i18n';
 import { DashboardTopProgram } from '@/services/provider.service';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { formatShortDate } from '@/utils/formatters';
 
 interface LiveProgramsTableProps {
     programs: DashboardTopProgram[];
 }
 
 export function LiveProgramsTable({ programs }: LiveProgramsTableProps) {
+    const hasPrograms = programs.length > 0;
+
     return (
-        <div className="bg-bgCard border border-borderCard rounded-lg overflow-hidden">
+        <div className="bg-bgCard border border-borderCard rounded-lg overflow-hidden flex flex-col h-full">
             <div className="flex items-center justify-between p-6">
                 <div>
                     <h2 className="text-white text-lg font-semibold">
@@ -26,58 +31,72 @@ export function LiveProgramsTable({ programs }: LiveProgramsTableProps) {
                         {t('providerDashboard.livePrograms.subtitle')}
                     </p>
                 </div>
-                <button className="text-textSecondary hover:text-white text-sm font-medium transition-colors">
-                    {t('providerDashboard.livePrograms.seeAll')}
-                </button>
+                <Button asChild variant="ghost" size="sm" className="text-textSecondary hover:text-white">
+                    <Link href="/dashboard/programs">
+                        {t('providerDashboard.livePrograms.seeAll')}
+                    </Link>
+                </Button>
             </div>
 
-            <Table>
-                <TableHeader className="bg-[#0f172a]">
-                    <TableRow className="border-none hover:bg-transparent">
-                        <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider pl-6">
-                            {t('providerDashboard.livePrograms.columns.program')}
-                        </TableHead>
-                        <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider">
-                            {t('providerDashboard.livePrograms.columns.dates')}
-                        </TableHead>
-                        <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-center">
-                            {t('providerDashboard.livePrograms.columns.enrolled')}
-                        </TableHead>
-                        <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-right pr-6">
-                            {t('providerDashboard.livePrograms.columns.fill')}
-                        </TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {programs.map((program) => {
-                        const fillPercentage = program.fillRate;
-                        return (
-                            <TableRow
-                                key={program._id}
-                                className="border-borderCard hover:bg-bgStatCard transition-colors"
-                            >
-                                <TableCell className="text-textSecondary text-sm font-normal pl-6 py-4">
-                                    {program.title}
-                                </TableCell>
-                                <TableCell className="text-textSidebarMuted text-xs font-normal py-4">
-                                    {new Date(program.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                </TableCell>
-                                <TableCell className="text-textSecondary text-sm font-normal py-4 text-center">
-                                    {program.enrolledCount} / {program.maxParticipants}
-                                </TableCell>
-                                <TableCell className="text-right pr-6 py-4">
-                                    <div className="flex items-center justify-end gap-2 min-w-[80px]">
-                                        <Progress
-                                            value={fillPercentage}
-                                            className="h-1.5 w-16 bg-[#1e293b]"
-                                        />
-                                    </div>
+            <div className="flex-1 overflow-auto">
+                <Table>
+                    <TableHeader className="bg-[#0f172a] sticky top-0 z-10">
+                        <TableRow className="border-none hover:bg-transparent">
+                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider pl-6">
+                                {t('providerDashboard.livePrograms.columns.program')}
+                            </TableHead>
+                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider">
+                                {t('providerDashboard.livePrograms.columns.dates')}
+                            </TableHead>
+                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-center">
+                                {t('providerDashboard.livePrograms.columns.enrolled')}
+                            </TableHead>
+                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-right pr-6">
+                                {t('providerDashboard.livePrograms.columns.fill')}
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {!hasPrograms ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="h-64 text-center">
+                                    <p className="text-textSidebarMuted text-sm">
+                                        {t('programme.empty')}
+                                    </p>
                                 </TableCell>
                             </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
+                        ) : (
+                            programs.map((program) => {
+                                const fillPercentage = program.fillRate;
+                                return (
+                                    <TableRow
+                                        key={program._id}
+                                        className="border-borderCard hover:bg-bgStatCard transition-colors"
+                                    >
+                                        <TableCell className="text-textSecondary text-sm font-normal pl-6 py-4">
+                                            {program.title}
+                                        </TableCell>
+                                        <TableCell className="text-textSidebarMuted text-xs font-normal py-4">
+                                            {formatShortDate(program.startDate)}
+                                        </TableCell>
+                                        <TableCell className="text-textSecondary text-sm font-normal py-4 text-center">
+                                            {program.enrolledCount} / {program.maxParticipants}
+                                        </TableCell>
+                                        <TableCell className="text-right pr-6 py-4">
+                                            <div className="flex items-center justify-end gap-2 min-w-[80px]">
+                                                <Progress
+                                                    value={fillPercentage}
+                                                    className="h-1.5 w-16 bg-[#1e293b]"
+                                                />
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 }

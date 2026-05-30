@@ -14,6 +14,7 @@ import { RecentActivityList } from "./provider/RecentActivityList";
 import { QuickActionCard } from "./provider/QuickActionCard";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
+import { Spinner } from "../ui/spinner";
 import { ROUTES } from "@/constants/navigation";
 
 //Employee Dashboard
@@ -40,9 +41,9 @@ function EmployeeDashboardView() {
 
   if (!data) {
     return (
-      <p className="text-xs text-muted-foreground">
-        {t('common.loading')}
-      </p>
+      <div className="flex justify-center items-center py-16">
+        <Spinner size="lg" />
+      </div>
     );
   }
 
@@ -90,7 +91,9 @@ function TrainingProviderDashboardView({ name }: { name: string }) {
 
   if (loading || !data) {
     return (
-      <p className="text-xs text-muted-foreground">{t("common.loading")}</p>
+      <div className="flex justify-center items-center py-16">
+        <Spinner size="lg" />
+      </div>
     );
   }
 
