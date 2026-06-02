@@ -12,6 +12,7 @@ import { DashboardTopProgram } from '@/services/provider.service';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { formatShortDate } from '@/utils/formatters';
+import { ROUTES } from '@/constants/navigation';
 
 interface LiveProgramsTableProps {
     programs: DashboardTopProgram[];
@@ -32,7 +33,7 @@ export function LiveProgramsTable({ programs }: LiveProgramsTableProps) {
                     </p>
                 </div>
                 <Button asChild variant="ghost" size="sm" className="text-textSecondary hover:text-white">
-                    <Link href="/dashboard/programs">
+                    <Link href={ROUTES.PROVIDER.PROGRAMS.ROOT}>
                         {t('providerDashboard.livePrograms.seeAll')}
                     </Link>
                 </Button>

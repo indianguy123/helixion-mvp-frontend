@@ -172,19 +172,19 @@ function TrainingProviderDashboardView({ name }: { name: string }) {
             title: t("providerDashboard.quickActions.publishSingle.title"),
             description: t("providerDashboard.quickActions.publishSingle.desc"),
             linkText: t("providerDashboard.quickActions.publishSingle.link"),
-            href: ROUTES.PROVIDER_CREATE_PROGRAM
+            href: ROUTES.PROVIDER.PROGRAMS.CREATE
           },
           {
             title: t("providerDashboard.quickActions.batchPublish.title"),
             description: t("providerDashboard.quickActions.batchPublish.desc"),
             linkText: t("providerDashboard.quickActions.batchPublish.link"),
-            href: ROUTES.PROVIDER_BULK_UPLOAD
+            href: ROUTES.PROVIDER.PROGRAMS.BULK
           },
           {
             title: t("providerDashboard.quickActions.exportEnrolment.title"),
             description: t("providerDashboard.quickActions.exportEnrolment.desc"),
             linkText: t("providerDashboard.quickActions.exportEnrolment.link"),
-            href: ROUTES.PROVIDER_EXPORT_ENROLMENT
+            href: ROUTES.PROVIDER.PROGRAMS.EXPORT
           }
         ].map((action, index) => (
           <QuickActionCard
