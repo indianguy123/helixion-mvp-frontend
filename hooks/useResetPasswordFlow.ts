@@ -59,7 +59,7 @@ export function useResetPasswordFlow(userId?: string) {
          setStep("success");
 
          setTimeout(() => {
-            router.push(ROUTES.SIGNIN);
+            router.push(ROUTES.AUTH.SIGNIN);
          }, 2000);
       }
    };

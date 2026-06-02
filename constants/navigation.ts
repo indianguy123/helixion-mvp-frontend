@@ -1,35 +1,47 @@
 // Route paths - single source of truth for all routes
 export const ROUTES = {
   // Auth routes
-  SIGNIN: '/signin',
-  SIGNUP: '/signup',
+  AUTH: {
+    SIGNIN: '/signin',
+    SIGNUP: '/signup',
+  },
 
-  // Main routes
-  DASHBOARD: '/dashboard',
-  ADMIN_DASHBOARD: '/admin/dashboard',
+  // Main dashboard routes
+  DASHBOARD: {
+    ROOT: '/dashboard',
+    ADMIN: '/admin/dashboard',
+  },
 
-  // Admin routes
-  ANALYTICS: '/analytics',
-  PENDING: '/pending',
-  USERS: '/users',
-  ROLES: '/roles',
-  IMPORT: '/admin/dashboard/import',
-  RESETPASSWORD: '/admin/reset-password',
-  PROGRAMS: '/programs',
-  ORGANIZATIONS: '/organizations',
-  AUDIT: '/audit',
-  SUPPORT: '/support',
-  INTEGRATIONS: '/integrations',
-  NOTIFICATIONS: '/notifications',
-  DEACTIVATE_USER: '/admin/dashboard/deactivate',
+  // Admin section routes
+  ADMIN: {
+    ANALYTICS: '/analytics',
+    PENDING: '/pending',
+    USERS: '/users',
+    ROLES: '/roles',
+    IMPORT: '/admin/dashboard/import',
+    RESET_PASSWORD: '/admin/reset-password',
+    PROGRAMS: '/programs',
+    ORGANIZATIONS: '/organizations',
+    AUDIT: '/audit',
+    SUPPORT: '/support',
+    INTEGRATIONS: '/integrations',
+    NOTIFICATIONS: '/notifications',
+    DEACTIVATE_USER: '/admin/dashboard/deactivate',
+  },
 
-  // Provider routes
-  PROVIDER_DASHBOARD: '/dashboard',
-  PROVIDER_CREATE_PROGRAM: '/dashboard/programs/create',
-  PROVIDER_BULK_UPLOAD: '/dashboard/programs/bulk',
-  PROVIDER_DRAFTS: '/dashboard/programs/drafts',
-  PROVIDER_ATTENDANCE: '/dashboard/update-attendance',
-  PROVIDER_EXPORT_ENROLMENT: '/dashboard/operations/enrolments',
+  // Training Provider section routes
+  PROVIDER: {
+    DASHBOARD: '/dashboard',
+    PROGRAMS: {
+      ROOT: '/dashboard/programs',
+      BULK: '/dashboard/programs/bulk',
+      DRAFTS: '/dashboard/programs/drafts',
+      ACTIVE: '/dashboard/programs/active',
+      CREATE: '/dashboard/programs/create',
+      EXPORT: '/dashboard/programs/export',
+    },
+    ATTENDANCE: '/dashboard/update-attendance',
+  },
 } as const;
 
 // Navigation item type - using Lucide icon type
@@ -59,18 +71,18 @@ export const USER_ROLES = {
 // Role-based route access
 export const ROLE_ACCESS = {
   [USER_ROLES.ADMIN]: [
-    ROUTES.ADMIN_DASHBOARD,
-    ROUTES.ANALYTICS,
-    ROUTES.PENDING,
-    ROUTES.USERS,
-    ROUTES.ROLES,
-    ROUTES.IMPORT,
-    ROUTES.PROGRAMS,
-    ROUTES.ORGANIZATIONS,
-    ROUTES.AUDIT,
+    ROUTES.DASHBOARD.ADMIN,
+    ROUTES.ADMIN.ANALYTICS,
+    ROUTES.ADMIN.PENDING,
+    ROUTES.ADMIN.USERS,
+    ROUTES.ADMIN.ROLES,
+    ROUTES.ADMIN.IMPORT,
+    ROUTES.ADMIN.PROGRAMS,
+    ROUTES.ADMIN.ORGANIZATIONS,
+    ROUTES.ADMIN.AUDIT,
   ],
-  [USER_ROLES.USER]: [ROUTES.DASHBOARD],
-  [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.PROVIDER_DASHBOARD, ROUTES.PROVIDER_BULK_UPLOAD],
+  [USER_ROLES.USER]: [ROUTES.DASHBOARD.ROOT],
+  [USER_ROLES.TRAINING_PROVIDER]: [ROUTES.PROVIDER.DASHBOARD, ROUTES.PROVIDER.PROGRAMS.BULK],
 } as const;
 
 

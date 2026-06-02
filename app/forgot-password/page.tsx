@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
 
         {/* BACK */}
         <Link
-          href={ROUTES.SIGNIN}
+          href={ROUTES.AUTH.SIGNIN}
           className="flex items-center gap-2 text-xs text-textMuted hover:text-white mb-6"
         >
           <ArrowLeft size={14} />

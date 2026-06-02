@@ -17,10 +17,10 @@ function LeftPanel() {
 
   return (
     <div className="flex flex-col gap-7">
-       {/* 
+      {/* 
        TAG: 'JOIN HELIXON · GET STARTED FREE', 
        */}
-       
+
       {/* <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-primaryDark" />
         <div className="text-xs tracking-widest font-medium text-textMuted flex items-center gap-1">
@@ -89,7 +89,7 @@ function RightPanel() {
       const res = await registerAPI(form);
 
       if (res.data.success) {
-        router.push(ROUTES.SIGNIN);
+        router.push(ROUTES.AUTH.SIGNIN);
       }
     } catch (err: any) {
       if (
@@ -117,7 +117,7 @@ function RightPanel() {
         <div className="text-red-500 text-sm mb-4">{formError}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5"  autoComplete="off">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="off">
         <InputField
           label={FORM.USERNAME_LABEL}
           icon={<User size={16} />}
@@ -175,7 +175,7 @@ function RightPanel() {
         <p className="text-center text-sm text-textMuted">
           {FORM.HAS_ACCOUNT}{' '}
           <Link
-            href={ROUTES.SIGNIN}
+            href={ROUTES.AUTH.SIGNIN}
             className="font-semibold hover:underline text-primary"
           >
             {FORM.SIGN_IN}

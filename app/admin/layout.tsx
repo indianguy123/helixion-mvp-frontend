@@ -12,7 +12,7 @@ interface DashboardLayoutProps {
 
 export default async function AdminLayout({ children }: DashboardLayoutProps) {
   const token = await getAccessToken();
-  if (!token) redirect(ROUTES.SIGNIN);
+  if (!token) redirect(ROUTES.AUTH.SIGNIN);
 
   const payload = await decodeJwtPayload(token);
 

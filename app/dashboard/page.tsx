@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
   const token = await getAccessToken();
-  if (!token) redirect(ROUTES.SIGNIN);
+  if (!token) redirect(ROUTES.AUTH.SIGNIN);
 
   const { role, name } = await decodeJwtPayload(token);
 

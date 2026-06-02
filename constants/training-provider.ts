@@ -10,7 +10,7 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: "Dashboard",
         key: "dashboard",
-        href: "/dashboard",
+        href: ROUTES.PROVIDER.DASHBOARD,
         icon: "layout-dashboard",
       },
       {
@@ -28,19 +28,19 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: "Create New Program",
         key: "create_program",
-        href: "/dashboard/create-program",
+        href: ROUTES.PROVIDER.PROGRAMS.CREATE,
         icon: "plus-circle",
       },
       {
         label: "Bulk Upload",
         key: "bulk_upload",
-        href: "/dashboard/bulk-program-upload",
+        href: ROUTES.PROVIDER.PROGRAMS.BULK,
         icon: "upload",
       },
       {
         label: "View Drafts",
         key: "view_drafts",
-        href: "/dashboard/view-draft",
+        href: ROUTES.PROVIDER.PROGRAMS.DRAFTS,
         icon: "file-text",
       },
     ],
@@ -52,13 +52,13 @@ export const TRAINING_PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: "Download Enrollment Data",
         key: "download_enrollment_data",
-        href: "/dashboard/download-enrol-data",
+        href: ROUTES.PROVIDER.PROGRAMS.EXPORT,
         icon: "download",
       },
       {
         label: "Update Attendance",
         key: "upload_attendance",
-        href: ROUTES.PROVIDER_ATTENDANCE,
+        href: ROUTES.PROVIDER.ATTENDANCE,
         icon: "clipboard-check",
       },
       {
@@ -85,13 +85,13 @@ export interface createProgramFormData {
   maxParticipants: string;
 }
 
- export const INITIAL_FORM_STATE: createProgramFormData = {
-    programTitle: "",
-    startDate: "",
-    endDate: "",
-    venue: "",
-    stayTypes: structuredClone(STAY_TYPES),
-    brochureFile: null,
-    minParticipants: "",
-    maxParticipants: "",
-  };
+export const INITIAL_FORM_STATE: createProgramFormData = {
+  programTitle: "",
+  startDate: "",
+  endDate: "",
+  venue: "",
+  stayTypes: structuredClone(STAY_TYPES),
+  brochureFile: null,
+  minParticipants: "",
+  maxParticipants: "",
+};

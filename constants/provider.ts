@@ -8,7 +8,7 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: 'Dashboard',
         key: 'dashboard',
-        href: ROUTES.PROVIDER_DASHBOARD,
+        href: ROUTES.PROVIDER.DASHBOARD,
         icon: 'layout-dashboard',
       },
       {
@@ -25,19 +25,19 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: 'Create New Program',
         key: 'create-program',
-        href: '/dashboard/programs/create',
+        href: ROUTES.PROVIDER.PROGRAMS.CREATE,
         icon: 'plus-circle',
       },
       {
         label: 'Bulk Upload',
         key: 'bulk-upload',
-        href: ROUTES.PROVIDER_BULK_UPLOAD,
+        href: ROUTES.PROVIDER.PROGRAMS.BULK,
         icon: 'upload-cloud',
       },
       {
         label: 'View Drafts',
         key: 'drafts',
-        href: ROUTES.PROVIDER_DRAFTS,
+        href: ROUTES.PROVIDER.PROGRAMS.DRAFTS,
         icon: 'file-text',
       },
     ],
@@ -54,7 +54,7 @@ export const PROVIDER_NAV_SECTIONS: NavSection[] = [
       {
         label: 'Update Attendance',
         key: 'attendance',
-        href: ROUTES.PROVIDER_ATTENDANCE,
+        href: ROUTES.PROVIDER.ATTENDANCE,
         icon: 'clipboard-check',
       },
       {
