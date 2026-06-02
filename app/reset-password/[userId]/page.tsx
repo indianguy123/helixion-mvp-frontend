@@ -47,7 +47,7 @@ export default function ResetPasswordPage() {
 
         {/* BACK */}
         <Link
-          href={ROUTES.SIGNIN}
+          href={ROUTES.AUTH.SIGNIN}
           className="flex items-center gap-2 text-xs text-textMuted hover:text-white mb-6"
         >
           <ArrowLeft size={14} />
@@ -171,7 +171,7 @@ export default function ResetPasswordPage() {
                 className="w-full bg-gradient-to-r from-primaryDark to-primary text-white shadow-glow"
               >
                 {loading ? (
-                   <Spinner size="sm" />
+                  <Spinner size="sm" />
                 ) : (
                   t('auth.resetPassword.submit')
                 )}

@@ -94,9 +94,9 @@ function RightPanel() {
         const role = payload.role;
 
         if (role === USER_ROLES.ADMIN) {
-          router.push(ROUTES.ADMIN_DASHBOARD);
+          router.push(ROUTES.DASHBOARD.ADMIN);
         } else {
-          router.push(ROUTES.DASHBOARD);
+          router.push(ROUTES.DASHBOARD.ROOT);
         }
       }
     } catch (err: any) {
@@ -190,7 +190,7 @@ function RightPanel() {
 
         <p className="text-center text-sm text-textMuted">
           {FORM.NO_ACCOUNT}{' '}
-          <Link href={ROUTES.SIGNUP} className="font-semibold hover:underline text-primary">
+          <Link href={ROUTES.AUTH.SIGNUP} className="font-semibold hover:underline text-primary">
             {FORM.CREATE_ACCOUNT}
           </Link>
         </p>

@@ -50,7 +50,7 @@ export function UpdateAttendanceListPage() {
 
   const handleUpdateClick = () => {
     if (selectedProgramId) {
-      router.push(`${ROUTES.PROVIDER_ATTENDANCE}/${selectedProgramId}`);
+      router.push(`${ROUTES.PROVIDER.ATTENDANCE}/${selectedProgramId}`);
     }
   };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import FileDropzone from '@/components/shared/FileDropzone';
 import AppModal from '@/components/ui/app-modal';
 import { Button } from '@/components/ui/button';
@@ -15,8 +16,10 @@ import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
 import UploadPreview from './UploadPreview';
 import UploadResults from './UploadResults';
+import { ROUTES } from '@/constants/navigation';
 
 export default function BulkProgramUpload() {
+  const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -165,7 +168,10 @@ export default function BulkProgramUpload() {
         description={modalDescription}
         stats={modalStats}
         doneLabel={t('button.done')}
-        onDone={handleReset}
+        onDone={() => {
+          handleReset();
+          router.push(ROUTES.PROVIDER.PROGRAMS.DRAFTS);
+        }}
       />
 
       <UploadHeader onDownloadSample={handleDownloadSample} />

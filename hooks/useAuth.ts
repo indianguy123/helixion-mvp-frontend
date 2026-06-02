@@ -35,7 +35,7 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
 
       // Decode token to get user info (basic JWT decode)
       const payload = decodeToken(token);
-      
+
       if (!payload) {
         removeAccessToken();
         setState({ user: null, isAuthenticated: false, isLoading: false });
@@ -74,7 +74,7 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
   const logout = useCallback(() => {
     removeAccessToken();
     setState({ user: null, isAuthenticated: false, isLoading: false });
-    router.push(ROUTES.SIGNIN);
+    router.push(ROUTES.AUTH.SIGNIN);
   }, [router]);
 
   useEffect(() => {
@@ -93,17 +93,17 @@ export function useAuth(requireAdmin: boolean = false): UseAuthReturn {
  * NOTE: This is for client-side role checking only
  * Actual verification happens on the server
  */
-function decodeToken(token: string): { 
-  sub?: string; 
-  username?: string; 
-  email?: string; 
+function decodeToken(token: string): {
+  sub?: string;
+  username?: string;
+  email?: string;
   role?: string;
   exp?: number;
 } | null {
   try {
     const base64Url = token.split('.')[1];
     if (!base64Url) return null;
-    
+
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(
       atob(base64)
@@ -111,7 +111,7 @@ function decodeToken(token: string): {
         .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
         .join('')
     );
-    
+
     return JSON.parse(jsonPayload);
   } catch {
     return null;
@@ -128,7 +128,7 @@ export function useAdminAuth(): UseAuthReturn {
 
   useEffect(() => {
     if (!auth.isLoading && !auth.isAuthenticated) {
-      router.push(ROUTES.SIGNIN);
+      router.push(ROUTES.AUTH.SIGNIN);
     }
   }, [auth.isLoading, auth.isAuthenticated, router]);
 
