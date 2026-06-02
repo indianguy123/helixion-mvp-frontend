@@ -119,30 +119,40 @@ function TrainingProviderDashboardView({ name }: { name: string }) {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title={t("providerDashboard.stats.livePrograms")}
-          value={data.overview.livePrograms}
-          subtitle={t("providerDashboard.stats.allPublished")}
-          subtitleColor="text-accentGreen"
-        />
-        <StatCard
-          title={t("providerDashboard.stats.totalEnrolled")}
-          value={data.overview.totalEnrollments}
-          subtitle={t("providerDashboard.stats.acrossPrograms", { count: data.overview.livePrograms })}
-          subtitleColor="text-textSidebarMuted"
-        />
-        <StatCard
-          title={t("providerDashboard.stats.drafts")}
-          value={data.overview.drafts}
-          subtitle={t("providerDashboard.stats.awaitingPublish")}
-          subtitleColor="text-accentOrange"
-        />
-        <StatCard
-          title={t("providerDashboard.stats.avgFillRate")}
-          value={`${data.overview.averageFillRate}%`}
-          subtitle={t("providerDashboard.stats.capacityUtilized")}
-          subtitleColor="text-accentGreen"
-        />
+        {[
+          {
+            title: t("providerDashboard.stats.livePrograms"),
+            value: data.overview.livePrograms,
+            subtitle: t("providerDashboard.stats.allPublished"),
+            subtitleColor: "text-accentGreen"
+          },
+          {
+            title: t("providerDashboard.stats.totalEnrolled"),
+            value: data.overview.totalEnrollments,
+            subtitle: t("providerDashboard.stats.acrossPrograms", { count: data.overview.livePrograms }),
+            subtitleColor: "text-textSidebarMuted"
+          },
+          {
+            title: t("providerDashboard.stats.drafts"),
+            value: data.overview.drafts,
+            subtitle: t("providerDashboard.stats.awaitingPublish"),
+            subtitleColor: "text-accentOrange"
+          },
+          {
+            title: t("providerDashboard.stats.avgFillRate"),
+            value: `${data.overview.averageFillRate}%`,
+            subtitle: t("providerDashboard.stats.capacityUtilized"),
+            subtitleColor: "text-accentGreen"
+          }
+        ].map((card, index) => (
+          <StatCard
+            key={index}
+            title={card.title}
+            value={card.value}
+            subtitle={card.subtitle}
+            subtitleColor={card.subtitleColor}
+          />
+        ))}
       </div>
 
       {/* Main Content: Table and Recent Activity */}
@@ -157,24 +167,34 @@ function TrainingProviderDashboardView({ name }: { name: string }) {
 
       {/* Quick Actions at the Bottom */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <QuickActionCard
-          title={t("providerDashboard.quickActions.publishSingle.title")}
-          description={t("providerDashboard.quickActions.publishSingle.desc")}
-          linkText={t("providerDashboard.quickActions.publishSingle.link")}
-          href={ROUTES.PROVIDER_CREATE_PROGRAM}
-        />
-        <QuickActionCard
-          title={t("providerDashboard.quickActions.batchPublish.title")}
-          description={t("providerDashboard.quickActions.batchPublish.desc")}
-          linkText={t("providerDashboard.quickActions.batchPublish.link")}
-          href={ROUTES.PROVIDER_BULK_UPLOAD}
-        />
-        <QuickActionCard
-          title={t("providerDashboard.quickActions.exportEnrolment.title")}
-          description={t("providerDashboard.quickActions.exportEnrolment.desc")}
-          linkText={t("providerDashboard.quickActions.exportEnrolment.link")}
-          href={ROUTES.PROVIDER_EXPORT_ENROLMENT}
-        />
+        {[
+          {
+            title: t("providerDashboard.quickActions.publishSingle.title"),
+            description: t("providerDashboard.quickActions.publishSingle.desc"),
+            linkText: t("providerDashboard.quickActions.publishSingle.link"),
+            href: ROUTES.PROVIDER_CREATE_PROGRAM
+          },
+          {
+            title: t("providerDashboard.quickActions.batchPublish.title"),
+            description: t("providerDashboard.quickActions.batchPublish.desc"),
+            linkText: t("providerDashboard.quickActions.batchPublish.link"),
+            href: ROUTES.PROVIDER_BULK_UPLOAD
+          },
+          {
+            title: t("providerDashboard.quickActions.exportEnrolment.title"),
+            description: t("providerDashboard.quickActions.exportEnrolment.desc"),
+            linkText: t("providerDashboard.quickActions.exportEnrolment.link"),
+            href: ROUTES.PROVIDER_EXPORT_ENROLMENT
+          }
+        ].map((action, index) => (
+          <QuickActionCard
+            key={index}
+            title={action.title}
+            description={action.description}
+            linkText={action.linkText}
+            href={action.href}
+          />
+        ))}
       </div>
     </div>
   );

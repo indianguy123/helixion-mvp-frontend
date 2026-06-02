@@ -42,18 +42,19 @@ export function LiveProgramsTable({ programs }: LiveProgramsTableProps) {
                 <Table>
                     <TableHeader className="bg-[#0f172a] sticky top-0 z-10">
                         <TableRow className="border-none hover:bg-transparent">
-                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider pl-6">
-                                {t('providerDashboard.livePrograms.columns.program')}
-                            </TableHead>
-                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider">
-                                {t('providerDashboard.livePrograms.columns.dates')}
-                            </TableHead>
-                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-center">
-                                {t('providerDashboard.livePrograms.columns.enrolled')}
-                            </TableHead>
-                            <TableHead className="text-textSidebarMuted text-[10px] font-bold tracking-wider text-right pr-6">
-                                {t('providerDashboard.livePrograms.columns.fill')}
-                            </TableHead>
+                            {[
+                                { key: 'program', label: t('providerDashboard.livePrograms.columns.program'), className: 'pl-6' },
+                                { key: 'dates', label: t('providerDashboard.livePrograms.columns.dates'), className: '' },
+                                { key: 'enrolled', label: t('providerDashboard.livePrograms.columns.enrolled'), className: 'text-center' },
+                                { key: 'fill', label: t('providerDashboard.livePrograms.columns.fill'), className: 'text-right pr-6' }
+                            ].map((col) => (
+                                <TableHead
+                                    key={col.key}
+                                    className={`text-textSidebarMuted text-[10px] font-bold tracking-wider ${col.className}`}
+                                >
+                                    {col.label}
+                                </TableHead>
+                            ))}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
