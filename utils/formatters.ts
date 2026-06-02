@@ -6,6 +6,29 @@ export const formatDate = (d?: string): string =>
   d ? new Date(d).toISOString().split('T')[0] : '—';
 
 /**
+ * Formats an ISO date string to "12 Apr 2025".
+ */
+export const formatShortDate = (d?: string): string =>
+  d
+    ? new Date(d).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+    : '—';
+
+/**
+ * Formats an ISO date string to "11:30 PM".
+ */
+export const formatTime = (d?: string): string =>
+  d
+    ? new Date(d).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    : '—';
+
+/**
  * Formats an ISO date string to a human-readable "last updated" timestamp.
  * Example: "May 16, 2026, 11:30 PM"
  */

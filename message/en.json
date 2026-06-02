@@ -326,5 +326,52 @@
       "errorLoadPrograms": "Failed to load programs",
       "errorLoadParticipants": "Failed to load participants",
       "errorSaveAttendance": "Failed to save attendance"
+   },
+   "providerDashboard": {
+      "welcome": "Welcome back, {name} — here's what's running today.",
+      "stats": {
+         "livePrograms": "Live programs",
+         "totalEnrolled": "Total enrolled",
+         "drafts": "Drafts",
+         "avgFillRate": "Avg. fill rate",
+         "allPublished": "All published",
+         "acrossPrograms": "Across {count} programs",
+         "awaitingPublish": "Awaiting publish",
+         "capacityUtilized": "Capacity utilised"
+      },
+      "livePrograms": {
+         "title": "Live training programs",
+         "subtitle": "Top 5 by enrolment",
+         "seeAll": "See all →",
+         "columns": {
+            "program": "PROGRAM",
+            "dates": "DATES",
+            "enrolled": "ENROLLED",
+            "fill": "FILL"
+         }
+      },
+      "recentActivity": {
+         "title": "Recent activity",
+         "subtitle": "Your actions across the platform"
+      },
+      "quickActions": {
+         "createProgram": "Create program",
+         "bulkUpload": "Bulk upload",
+         "publishSingle": {
+            "title": "Publish single program",
+            "desc": "Create a program, attach brochure, set fees & capacity.",
+            "link": "Start →"
+         },
+         "batchPublish": {
+            "title": "Batch publish via CSV",
+            "desc": "Upload a CSV to publish multiple programs at once.",
+            "link": "Upload →"
+         },
+         "exportEnrolment": {
+            "title": "Export enrolment data",
+            "desc": "Download attendee data per program as CSV.",
+            "link": "Export →"
+         }
+      }
    }
 }
