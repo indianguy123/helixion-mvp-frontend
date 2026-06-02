@@ -16,6 +16,7 @@ import UploadHeader from './UploadHeader';
 import UploadDropzone from './UploadDropzone';
 import UploadPreview from './UploadPreview';
 import UploadResults from './UploadResults';
+import { ROUTES } from '@/constants/navigation';
 
 export default function BulkProgramUpload() {
   const router = useRouter();
@@ -157,7 +158,7 @@ export default function BulkProgramUpload() {
         doneLabel={t('button.done')}
         onDone={() => {
           handleReset();
-          router.push('/dashboard/programs/drafts');
+          router.push(ROUTES.PROVIDER.PROGRAMS.DRAFTS);
         }}
       />
 

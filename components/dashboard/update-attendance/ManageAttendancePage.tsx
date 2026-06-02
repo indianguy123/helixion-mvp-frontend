@@ -132,7 +132,7 @@ export function ManageAttendancePage() {
 
   const handleDone = () => {
     setSuccessModalOpen(false);
-    router.push(ROUTES.PROVIDER_ATTENDANCE);
+    router.push(ROUTES.PROVIDER.ATTENDANCE);
   };
 
   const programTitle = program?.title || "Program";
@@ -145,10 +145,10 @@ export function ManageAttendancePage() {
           <p className="text-sm text-gray-400 mt-1">
             {program.startDate
               ? new Date(program.startDate).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })
               : "-"}{" "}
             · {program.venue} · {participants.length} participants
           </p>
